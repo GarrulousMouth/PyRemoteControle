@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RemoteControl</title>
+    <style>
+        body {
+            background-color: #0F032D;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+        }
+
+        svg,
+        svg * {
+            pointer-events: none;
+        }
+
+        .container {
+            box-sizing: border-box;
+            position: relative;
+            width: 335px;
+            margin: 0 auto;
+            margin-top: 48px;
+            display: flex;
+            flex-direction: column;
+
+        }
+
+        .box-change-input {
+            margin-bottom: 74px;
+        }
+
+        .box-elements {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        .box-controller {
+            display: flex;
+            width: 200%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .checkbox-btn {
+            display: none;
+        }
+
+        .checkbox-label {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 16px 0;
+            background: linear-gradient(to right, #843CEB 0%, #4C00FF 100%);
+            border-radius: 100px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .checkbox-btn:checked+.checkbox-label {
+            background: linear-gradient(to right, #752AD7 0%, #3C00D4 100%);
+            color: white;
+        }
+
+
+        .mouse,
+        .keyboard {
+
+            width: 50%;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .body-mouse {
+            border: 4px solid #fff;
+            border-radius: 320px 320px 1000px 1000px;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 48px;
+        }
+
+        .mouse-touch {
+            background-color: #ffffff08;
+            touch-action: none;
+            border-radius: 20px 20px 1000px 1000px;
+            height: 242px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-touchpad {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 100px;
+            width: 56px;
+            height: 56px;
+            background-color: #FFFFFF16;
+            animation: pulse 1.5s infinite
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .border-block {
+            border-radius: 20px;
+        }
+
+        .touchpad-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .button-mouse {
+            width: 126px;
+            border: 4px solid #fff;
+            height: 184px;
+            margin-top: -4px;
+        }
+
+        .button-mouse:active {
+            background: #FFFFFF16;
+        }
+
+        .mouse-left {
+            border-radius: 32px 0 0 32px;
+            border-right: none;
+        }
+
+        .mouse-right {
+            border-radius: 0 32px 32px 0;
+        }
+
+        .mouse-middle {
+            position: absolute;
+            width: 40px;
+            height: 80px;
+            background: linear-gradient(#843CEB 0%, #4C00FF 100%);
+            border: 4px solid #fff;
+            border-radius: 100px;
+            z-index: 3;
+            touch-action: none;
+        }
+
+        .mouse-middle:active {
+            background: linear-gradient(#752AD7 0%, #3C00D4 100%);
+        }
+
+        .group-button {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .group-button__center {
+            justify-content: center;
+        }
+
+        .group-button:not(:last-child) {
+            margin-bottom: 48px;
+            padding-top: 40px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 48px;
+            height: 48px;
+            border: 1px solid #FFFFFF40;
+            border-radius: 100px;
+        }
+
+        .button:active {
+            background: #FFFFFF16;
+        }
+
+        .button-command:not(:last-child) {
+            margin-right: 24px;
+        }
+
+        .keyboard-input {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .input-wrapper {
+            position: relative;
+            width: 99%;
+            margin-bottom: 148px;
+            display: flex;
+            justify-content: center;
+            border: 1px solid #FFFFFF40;
+            border-radius: 100px;
+        }
+
+        .input-string {
+            width: 100%;
+            ;
+            padding: 0;
+            height: 52px;
+            color: transparent;
+            caret-color: transparent;
+            background-color: transparent;
+            border: none;
+            border-radius: 100px;
+
+        }
+
+        .input-string:active {
+            background-color: #FFFFFF16;
+
+        }
+
+        .input-string:active,
+        .input-string:focus {
+            outline: none;
+        }
+
+        .input-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            transition: 0.2s ease all;
+        }
+
+        .not-selected {
+            border: 1px solid red;
+            border-radius: 100px;
+        }
+
+        .selected {
+            border: 1px solid green;
+        }
+
+        #box-quick-buttons {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .weight-1 {
+            grid-column: span 1;
+        }
+
+        .weight-2 {
+            grid-column: span 2;
+        }
+
+        .weight-3 {
+            grid-column: span 3;
+        }
+
+        .weight-4 {
+            grid-column: span 4;
+        }
+
+        .weight-5 {
+            grid-column: span 5;
+        }
+    </style>
+    <link rel="shortcut icon" href="#" type="image/x-icon">
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="box-change-input">
+            <input class="checkbox-btn" type="checkbox" name="changeInput" id="changeInput">
+            <label class="checkbox-label" for="changeInput">Переключить управление</label>
+        </div>
+        <div class="box-elements">
+            <div class="box-controller" id="box-controller">
+                <div class="mouse" id="mouse">
+                    <div class="body-mouse">
+                        <div class="touchpad-buttons">
+                            <div class="button-mouse mouse-left" data-action-mouse="clickLeft" id="left-click">
+                            </div>
+                            <div class="button-mouse mouse-middle" data-action-mouse="clickMiddle" id="middle-click">
+                            </div>
+                            <div class="button-mouse mouse-right" data-action-mouse="clickRight" id="right-click">
+                            </div>
+                        </div>
+                        <div class="box-touchpad">
+                            <div class="mouse-touch" id="touchpad">
+                                <div class="icon-touchpad">
+                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <g clip-path="url(#clip0_5_1931)">
+                                            <path
+                                                d="M13.8333 5.99999C13.8333 5.69057 13.7109 5.39326 13.4921 5.17447C13.2734 4.95568 12.976 4.83332 12.6666 4.83332C12.3572 4.83332 12.0599 4.95568 11.8411 5.17447C11.6223 5.39326 11.5 5.69057 11.5 5.99999V17.3333C11.5 17.74 11.2082 18.0764 10.8229 18.1497C10.8061 18.153 10.789 18.1527 10.7721 18.1549C10.7373 18.1594 10.7026 18.1667 10.6666 18.1667L10.6653 18.1654C10.6103 18.1654 10.5554 18.1605 10.5013 18.1497C10.4852 18.1465 10.4701 18.1396 10.4544 18.1354C10.316 18.0993 10.184 18.0315 10.0755 17.9232L8.11584 15.9635L8.01428 15.8698C7.76903 15.6624 7.4678 15.5303 7.14709 15.4909C6.78069 15.4459 6.40895 15.5249 6.0924 15.7148C5.83197 15.8711 5.64288 16.1231 5.56506 16.4167C5.48728 16.7103 5.52679 17.023 5.67574 17.2878C8.18808 21.7535 9.62894 24.2655 10.0273 24.8776H10.0286L10.2903 25.2773H10.289C10.9417 26.2677 11.8308 27.0807 12.875 27.6432C13.9197 28.2059 15.088 28.5002 16.2747 28.5H18.664C20.5647 28.5 22.3877 27.745 23.7317 26.401C25.0757 25.057 25.8307 23.234 25.8307 21.3333V15.3333C25.8307 15.0239 25.7083 14.7266 25.4895 14.5078C25.2708 14.2891 24.9734 14.1667 24.664 14.1667C24.3549 14.1667 24.0585 14.2894 23.8398 14.5078C23.6321 14.7155 23.5117 14.9941 23.5 15.2864V16C23.5 16.4602 23.1269 16.8333 22.6666 16.8333C22.2064 16.8333 21.8333 16.4602 21.8333 16V15.3581C21.833 15.3498 21.8307 15.3416 21.8307 15.3333C21.8307 15.3159 21.833 15.2986 21.8333 15.2812V14C21.8333 13.6906 21.7109 13.3933 21.4921 13.1745C21.2734 12.9557 20.976 12.8333 20.6666 12.8333C20.3572 12.8333 20.0599 12.9557 19.8411 13.1745C19.6223 13.3933 19.5 13.6906 19.5 14V16C19.5 16.4602 19.1269 16.8333 18.6666 16.8333C18.2064 16.8333 17.8333 16.4602 17.8333 16V12.6667C17.8333 12.3572 17.7109 12.0599 17.4921 11.8411C17.2734 11.6223 16.976 11.5 16.6666 11.5C16.3572 11.5 16.0599 11.6223 15.8411 11.8411C15.6223 12.0599 15.5 12.3572 15.5 12.6667V16C15.5 16.4602 15.1269 16.8333 14.6666 16.8333C14.2064 16.8333 13.8333 16.4602 13.8333 16V5.99999ZM6.32548 4.79556C6.74564 4.60792 7.23799 4.79606 7.42574 5.21614C7.61339 5.63632 7.42528 6.12867 7.00516 6.3164C5.90153 6.80927 4.85331 7.41818 3.87756 8.1315C3.50602 8.40312 2.98381 8.32205 2.71219 7.95051C2.44085 7.57915 2.52213 7.05813 2.89318 6.78645C3.96375 6.00379 5.1146 5.33635 6.32548 4.79556ZM18.8828 3.80598C20.7248 4.30002 22.4527 5.06436 24.0247 6.05468C24.4139 6.30007 24.5304 6.81511 24.2851 7.20442C24.0398 7.59372 23.5247 7.71013 23.1354 7.46483C21.7022 6.56199 20.1282 5.86528 18.4505 5.41535C18.0061 5.29601 17.7427 4.83894 17.8619 4.39452C17.9813 3.95018 18.4383 3.68679 18.8828 3.80598ZM15.5 10.0872C15.8634 9.92284 16.26 9.83332 16.6666 9.83332C17.4181 9.83332 18.1392 10.1314 18.6705 10.6628C18.925 10.9172 19.1238 11.2164 19.2643 11.5404C19.6881 11.2987 20.1702 11.1667 20.6666 11.1667C21.4181 11.1667 22.1392 11.4647 22.6705 11.9961C22.9246 12.2502 23.1226 12.5491 23.263 12.8724C23.6865 12.6313 24.1682 12.5 24.664 12.5C25.4154 12.5 26.1366 12.7981 26.6679 13.3294C27.1993 13.8608 27.4974 14.5819 27.4974 15.3333V21.3333C27.4974 23.6761 26.5667 25.9228 24.9101 27.5794C23.2536 29.2359 21.0067 30.1667 18.664 30.1667H15.9974C15.9551 30.1666 15.9142 30.1597 15.8737 30.1536C14.5499 30.0936 13.2543 29.7407 12.0846 29.1107C10.7967 28.4169 9.70038 27.4132 8.89579 26.1914L8.89449 26.1888L8.63277 25.7891V25.7878C8.19756 25.1195 6.71982 22.5407 4.22391 18.1042C3.86215 17.4611 3.76535 16.7028 3.95438 15.9896C4.14345 15.2763 4.60278 14.6646 5.23563 14.2851L5.47912 14.1536C6.05706 13.8694 6.70702 13.7582 7.35022 13.8372C7.99348 13.9163 8.5978 14.1806 9.0898 14.5963L9.29292 14.7838L9.83329 15.3229V5.99999C9.83329 5.24854 10.1314 4.52744 10.6627 3.99608C11.1941 3.46473 11.9152 3.16666 12.6666 3.16666C13.4181 3.16666 14.1392 3.46473 14.6705 3.99608C15.2019 4.52744 15.5 5.24854 15.5 5.99999V10.0872Z"
+                                                fill="white" />
+                                        </g>
+                                        <defs>
+                                            <clipPath id="clip0_5_1931">
+                                                <rect width="32" height="32" fill="white" />
+                                            </clipPath>
+                                        </defs>
+                                    </svg>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="" id="box-quick-buttons"></div>
+                </div>
+                <div class="keyboard" id="keyboard">
+                    <div class="box-button-quick">
+                        <input class="checkbox-btn" type="checkbox" name="choiceButton" id="choiceButton">
+                        <label class="checkbox-label" for="choiceButton">Выбрать кнопки</label>
+                    </div>
+                    <div class="group-button">
+                        <div class="button" data-weight="1" data-action-media="volumeDown">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_5_1952)">
+                                    <path
+                                        d="M19 11.375C19.3452 11.375 19.625 11.6548 19.625 12C19.625 12.3452 19.3452 12.625 19 12.625H5C4.65482 12.625 4.375 12.3452 4.375 12C4.375 11.6548 4.65482 11.375 5 11.375H19Z"
+                                        fill="white" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_5_1952">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="button" data-weight="1" data-action-media="volumeUp">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_5_1943)">
+                                    <path
+                                        d="M11.375 19V12.625H5C4.65482 12.625 4.375 12.3452 4.375 12C4.375 11.6548 4.65482 11.375 5 11.375H11.375V5C11.375 4.65482 11.6548 4.375 12 4.375C12.3452 4.375 12.625 4.65482 12.625 5V11.375H19C19.3452 11.375 19.625 11.6548 19.625 12C19.625 12.3452 19.3452 12.625 19 12.625H12.625V19C12.625 19.3452 12.3452 19.625 12 19.625C11.6548 19.625 11.375 19.3452 11.375 19Z"
+                                        fill="white" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_5_1943">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="button" data-weight="1" data-action-media="prevMedia">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_5_1968)">
+                                    <path
+                                        d="M3.375 19V5C3.375 4.65482 3.65482 4.375 4 4.375C4.34518 4.375 4.625 4.65482 4.625 5V19C4.625 19.3452 4.34518 19.625 4 19.625C3.65482 19.625 3.375 19.3452 3.375 19ZM19.6855 4.45996C19.8788 4.34745 20.1176 4.34663 20.3115 4.45801C20.5055 4.56949 20.625 4.77627 20.625 5V19C20.625 19.2237 20.5055 19.4305 20.3115 19.542C20.1176 19.6534 19.8788 19.6526 19.6855 19.54L7.68555 12.54C7.49354 12.428 7.375 12.2223 7.375 12C7.375 11.7777 7.49354 11.572 7.68555 11.46L19.6855 4.45996ZM9.24023 12L19.375 17.9111V6.08789L9.24023 12Z"
+                                        fill="white" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_5_1968">
+                                        <rect width="24" height="24" fill="white" transform="matrix(-1 0 0 1 24 0)" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="button" data-weight="1" data-action-media="playPause">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_5_1975)">
+                                    <path
+                                        d="M9.375 6C9.375 5.90054 9.33595 5.8047 9.26562 5.73438C9.1953 5.66405 9.09946 5.625 9 5.625H7C6.90054 5.625 6.8047 5.66405 6.73438 5.73438C6.66405 5.8047 6.625 5.90054 6.625 6V18C6.625 18.0995 6.66405 18.1953 6.73438 18.2656C6.8047 18.336 6.90054 18.375 7 18.375H9C9.09946 18.375 9.1953 18.336 9.26562 18.2656C9.33595 18.1953 9.375 18.0995 9.375 18V6ZM17.375 6C17.375 5.90054 17.336 5.8047 17.2656 5.73438C17.1953 5.66405 17.0995 5.625 17 5.625H15C14.9005 5.625 14.8047 5.66405 14.7344 5.73438C14.664 5.8047 14.625 5.90054 14.625 6V18C14.625 18.0995 14.664 18.1953 14.7344 18.2656C14.8047 18.336 14.9005 18.375 15 18.375H17C17.0995 18.375 17.1953 18.336 17.2656 18.2656C17.336 18.1953 17.375 18.0995 17.375 18V6ZM10.625 18C10.625 18.431 10.4542 18.8447 10.1494 19.1494C9.84467 19.4542 9.43098 19.625 9 19.625H7C6.56902 19.625 6.15533 19.4542 5.85059 19.1494C5.54584 18.8447 5.375 18.431 5.375 18V6C5.375 5.56902 5.54584 5.15533 5.85059 4.85059C6.15533 4.54584 6.56902 4.375 7 4.375H9C9.43098 4.375 9.84467 4.54584 10.1494 4.85059C10.4542 5.15533 10.625 5.56902 10.625 6V18ZM18.625 18C18.625 18.431 18.4542 18.8447 18.1494 19.1494C17.8447 19.4542 17.431 19.625 17 19.625H15C14.569 19.625 14.1553 19.4542 13.8506 19.1494C13.5458 18.8447 13.375 18.431 13.375 18V6C13.375 5.56902 13.5458 5.15533 13.8506 4.85059C14.1553 4.54584 14.569 4.375 15 4.375H17C17.431 4.375 17.8447 4.54584 18.1494 4.85059C18.4542 5.15533 18.625 5.56902 18.625 6V18Z"
+                                        fill="white" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_5_1975">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="button" data-weight="1" data-action-media="nextMedia">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_5_1982)">
+                                    <path
+                                        d="M3.68848 4.45801C3.88239 4.34663 4.12122 4.34745 4.31445 4.45996L16.3145 11.46C16.5065 11.572 16.625 11.7777 16.625 12C16.625 12.2223 16.5065 12.428 16.3145 12.54L4.31445 19.54C4.12122 19.6526 3.88239 19.6534 3.68848 19.542C3.49452 19.4305 3.375 19.2237 3.375 19V5C3.375 4.77627 3.49452 4.56949 3.68848 4.45801ZM19.375 19V5C19.375 4.65482 19.6548 4.375 20 4.375C20.3452 4.375 20.625 4.65482 20.625 5V19C20.625 19.3452 20.3452 19.625 20 19.625C19.6548 19.625 19.375 19.3452 19.375 19ZM4.625 17.9111L14.7598 12L4.625 6.08789V17.9111Z"
+                                        fill="white" />
+                                </g>
+                                <defs>
+                                    <clipPath id="clip0_5_1982">
+                                        <rect width="24" height="24" fill="white" />
+                                    </clipPath>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="keyboard-input">
+                        <div class="input-wrapper" data-weight="5" data-action-keyboard="text">
+                            <input class="input-string" autocapitalize="none" type="text" name="hidden-input"
+                                data-input="text">
+                            <label for="hidden-input" class="input-label">Активировать ввод</label>
+                        </div>
+                        <div class="group-button group-button__center">
+                            <div class="button button-command" data-weight="1" data-action-command="changeLayout">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5_6791)">
+                                        <path
+                                            d="M8.29688 12C8.29688 11.2027 8.3523 10.4094 8.45898 9.625H3.9707C3.74456 10.3895 3.625 11.1884 3.625 12C3.625 12.8057 3.74209 13.6053 3.96973 14.375H8.45898C8.3523 13.5906 8.29688 12.7973 8.29688 12ZM9.95508 15.625C10.3331 17.2901 10.9707 18.892 11.8506 20.3711C11.9004 20.372 11.9502 20.375 12 20.375C12.0492 20.375 12.0983 20.372 12.1475 20.3711C13.0276 18.8919 13.6658 17.2904 14.0439 15.625H9.95508ZM4.45117 15.625C4.85977 16.4759 5.40912 17.2529 6.07812 17.9219C6.85578 18.6995 7.77888 19.3164 8.79492 19.7373C9.28965 19.9422 9.80208 20.0974 10.3242 20.2041C9.56353 18.7579 9.00839 17.2168 8.67383 15.625H4.45117ZM15.3252 15.625C14.9906 17.2169 14.4355 18.7579 13.6748 20.2041C14.1973 20.0974 14.7101 19.9424 15.2051 19.7373C16.2211 19.3164 17.1442 18.6995 17.9219 17.9219C18.5909 17.2529 19.1402 16.4759 19.5488 15.625H15.3252ZM13.6748 3.79395C14.436 5.24062 14.9905 6.78256 15.3252 8.375H19.5488C19.1435 7.53097 18.5965 6.75279 17.9219 6.07812C16.752 4.90828 15.2719 4.11993 13.6748 3.79395ZM11.8506 3.62793C10.9704 5.1072 10.3332 6.70959 9.95508 8.375H14.0439C13.6658 6.70938 13.0278 5.10736 12.1475 3.62793C12.0983 3.62707 12.0492 3.625 12 3.625C11.9501 3.625 11.9004 3.62704 11.8506 3.62793ZM10.3242 3.79395C8.72747 4.12005 7.24774 4.90851 6.07812 6.07812C5.40346 6.75279 4.85646 7.53097 4.45117 8.375H8.67383C9.00851 6.78261 9.56312 5.24058 10.3242 3.79395ZM9.54688 12C9.54688 12.7979 9.60681 13.5914 9.72168 14.375H14.2783C14.3932 13.5915 14.4531 12.7979 14.4531 12C14.4531 11.2021 14.3932 10.4085 14.2783 9.625H9.72168C9.60681 10.4086 9.54688 11.2021 9.54688 12ZM15.7031 12C15.7031 12.7973 15.6477 13.5906 15.541 14.375H20.0303C20.2579 13.6053 20.375 12.8057 20.375 12C20.375 11.1884 20.2554 10.3895 20.0293 9.625H15.541C15.6477 10.4094 15.7031 11.2027 15.7031 12ZM21.625 12C21.625 13.264 21.3763 14.5158 20.8926 15.6836C20.4089 16.8513 19.6994 17.9119 18.8057 18.8057C17.9119 19.6994 16.8513 20.4089 15.6836 20.8926C14.7236 21.2902 13.7064 21.5252 12.6729 21.5977C12.5826 21.6237 12.4876 21.6315 12.3936 21.6152C12.2625 21.6206 12.1314 21.625 12 21.625C11.8683 21.625 11.7368 21.6206 11.6055 21.6152C11.5111 21.6314 11.4157 21.624 11.3252 21.5977C10.2923 21.525 9.27578 21.29 8.31641 20.8926C7.1487 20.4089 6.08806 19.6994 5.19434 18.8057C4.30061 17.9119 3.59112 16.8513 3.10742 15.6836C2.62372 14.5158 2.375 13.264 2.375 12C2.375 9.44729 3.3893 6.99937 5.19434 5.19434C6.83984 3.54883 9.01976 2.56319 11.3262 2.40137C11.4163 2.37527 11.5115 2.36864 11.6055 2.38477C11.7367 2.37939 11.8682 2.375 12 2.375C12.1315 2.375 12.2627 2.37941 12.3936 2.38477C12.4872 2.3686 12.582 2.37558 12.6719 2.40137C14.979 2.56277 17.1597 3.54837 18.8057 5.19434C20.6107 6.99937 21.625 9.44729 21.625 12Z"
+                                            fill="white" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5_6791">
+                                            <rect width="24" height="24" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="button button-command" data-weight="1" data-action-command="copy">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5_6792)">
+                                        <path
+                                            d="M5.625 19C5.625 19.3647 5.76948 19.7148 6.02734 19.9727C6.28521 20.2305 6.63533 20.375 7 20.375H14C14.3647 20.375 14.7148 20.2305 14.9727 19.9727C15.2305 19.7148 15.375 19.3647 15.375 19V17.625H11C10.3038 17.625 9.63584 17.3487 9.14355 16.8564C8.65127 16.3642 8.375 15.6962 8.375 15V7.625H7C6.63533 7.625 6.28521 7.76948 6.02734 8.02734C5.76948 8.28521 5.625 8.63533 5.625 9V19ZM20.625 15C20.625 15.6962 20.3487 16.3642 19.8564 16.8564C19.3642 17.3487 18.6962 17.625 18 17.625H16.625V19C16.625 19.6962 16.3487 20.3642 15.8564 20.8564C15.3642 21.3487 14.6962 21.625 14 21.625H7C6.30381 21.625 5.63584 21.3487 5.14355 20.8564C4.65127 20.3642 4.375 19.6962 4.375 19V9C4.375 8.30381 4.65127 7.63584 5.14355 7.14355C5.63584 6.65127 6.30381 6.375 7 6.375H8.375V5C8.375 4.30381 8.65127 3.63584 9.14355 3.14355C9.63584 2.65127 10.3038 2.375 11 2.375H15C15.1658 2.375 15.3252 2.44041 15.4424 2.55762L20.4424 7.55762C20.5596 7.67483 20.625 7.83424 20.625 8V15ZM15.625 7C15.625 7.09946 15.664 7.1953 15.7344 7.26562C15.8047 7.33595 15.9005 7.375 16 7.375H18.4902L15.625 4.50977V7ZM9.625 15C9.625 15.3647 9.76948 15.7148 10.0273 15.9727C10.2852 16.2305 10.6353 16.375 11 16.375H18C18.3647 16.375 18.7148 16.2305 18.9727 15.9727C19.2305 15.7148 19.375 15.3647 19.375 15V8.625H16C15.569 8.625 15.1553 8.45416 14.8506 8.14941C14.5458 7.84467 14.375 7.43098 14.375 7V3.625H11C10.6353 3.625 10.2852 3.76948 10.0273 4.02734C9.76948 4.28521 9.625 4.63533 9.625 5V15Z"
+                                            fill="white" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5_6792">
+                                            <rect width="24" height="24" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                            <div class="button button-command" data-weight="1" data-action-command="insert">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <g clip-path="url(#clip0_5_6807)">
+                                        <path
+                                            d="M18.375 7C18.375 6.63533 18.2305 6.28521 17.9727 6.02734C17.7148 5.76948 17.3647 5.625 17 5.625H15.5469C15.4335 6.08699 15.1984 6.51449 14.8564 6.85645C14.3642 7.34873 13.6962 7.625 13 7.625H11C10.3038 7.625 9.63584 7.34873 9.14355 6.85645C8.8016 6.51449 8.56651 6.08699 8.45312 5.625H7C6.63533 5.625 6.28521 5.76948 6.02734 6.02734C5.76948 6.28521 5.625 6.63533 5.625 7V19C5.625 19.3647 5.76948 19.7148 6.02734 19.9727C6.28521 20.2305 6.63533 20.375 7 20.375H17C17.3647 20.375 17.7148 20.2305 17.9727 19.9727C18.2305 19.7148 18.375 19.3647 18.375 19V7ZM11 3.625C10.6353 3.625 10.2852 3.76948 10.0273 4.02734C9.76948 4.28521 9.625 4.63533 9.625 5C9.625 5.36467 9.76948 5.71479 10.0273 5.97266C10.2852 6.23052 10.6353 6.375 11 6.375H13C13.3647 6.375 13.7148 6.23052 13.9727 5.97266C14.2305 5.71479 14.375 5.36467 14.375 5C14.375 4.63533 14.2305 4.28521 13.9727 4.02734C13.7148 3.76948 13.3647 3.625 13 3.625H11ZM19.625 19C19.625 19.6962 19.3487 20.3642 18.8564 20.8564C18.3642 21.3487 17.6962 21.625 17 21.625H7C6.30381 21.625 5.63584 21.3487 5.14355 20.8564C4.65127 20.3642 4.375 19.6962 4.375 19V7C4.375 6.30381 4.65127 5.63584 5.14355 5.14355C5.63584 4.65127 6.30381 4.375 7 4.375H8.45312C8.56651 3.91301 8.8016 3.48551 9.14355 3.14355C9.63584 2.65127 10.3038 2.375 11 2.375H13C13.6962 2.375 14.3642 2.65127 14.8564 3.14355C15.1984 3.48551 15.4335 3.91301 15.5469 4.375H17C17.6962 4.375 18.3642 4.65127 18.8564 5.14355C19.3487 5.63584 19.625 6.30381 19.625 7V19Z"
+                                            fill="white" />
+                                    </g>
+                                    <defs>
+                                        <clipPath id="clip0_5_6807">
+                                            <rect width="24" height="24" fill="white" />
+                                        </clipPath>
+                                    </defs>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <script>
+
+            let socket;
+            let url = `ws://${window.location.host}/ws`
+
+            let clickCount = 0;
+            let clickTimer;
+            let isMoving = false;
+
+            let activePointers = new Map();
+            let isScrolling = false;
+            let isSelectionMode = false;
+
+            const touchpad = document.getElementById('touchpad');
+
+            function connect() {
+                console.log("Connection attempt")
+                socket = new WebSocket(url)
+
+                socket.onopen = () => {
+                    console.log("Connection completed")
+                }
+
+                socket.onclose = (e) => {
+                    console.log("Connection lost. Reconnection")
+                    setTimeout(() => {
+                        connect();
+                    }, 2000);
+                }
+
+                socket.onerror = (err) => {
+                    console.log("Connection error. Connection closed")
+                    socket.close();
+                }
+            }
+
+            connect();
+
+
+            touchpad.addEventListener('pointerdown', (e) => {
+                let iconTouchpad = document.getElementsByClassName("icon-touchpad");
+                iconTouchpad[0].style.display = "none"
+                touchpad.style.background = "#D9D9D916";
+                clickCount++;
+                clearTimeout(clickTimer)
+                isMoving = false;
+                activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
+                if (clickCount === 1) {
+                    clickTimer = setTimeout(() => {
+                        if (!isMoving) {
+                            socket.send(JSON.stringify({ input: "mouse", type: "clickLeft" }));
+                            clickCount = 0
+                        }
+                    }, 200);
+                }
+                else if (activePointers.size === 2) {
+                    isScrolling = true;
+                }
+                else if (clickCount === 2) {
+                    clearTimeout(clickTimer);
+                    socket.send(JSON.stringify({ input: "mouse", type: "dragAndDrop", command: "press" }))
+                }
+
+            }, { passive: false });
+
+            touchpad.addEventListener('pointerup', (e) => {
+                let iconTouchpad = document.getElementsByClassName("icon-touchpad");
+                touchpad.style.background = "#FFFFFF08";
+                iconTouchpad[0].style.display = "flex"
+
+                isScrolling = false;
+                activePointers.delete(e.pointerId);
+                if (clickCount >= 2) {
+                    socket.send(JSON.stringify({ input: "mouse", type: "dragAndDrop", command: "release" }))
+                    console.log(clickCount)
+                    clickCount = 0;
+                }
+
+            }, { passive: false });
+
+            let lastSendTime = 0;
+            const THROTTTLE_MS = 8;
+
+            touchpad.addEventListener("pointermove", function (e) {
+                e.preventDefault();
+                isMoving = true;
+                clearTimeout(clickTimer)
+                if (clickCount < 2 || isScrolling) {
+                    clickCount = 0;
+                }
+                const dx = e.movementX;
+                const dy = e.movementY;
+                if (Date.now() - lastSendTime > THROTTTLE_MS) {
+                    requestAnimationFrame(() => {
+
+
+                        if (isScrolling) {
+                            if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
+                                socket.send(JSON.stringify({ input: "mouse", type: "scroll", y: dy }));
+                            }
+                        } else {
+                            if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
+
+                                socket.send(JSON.stringify({ input: "mouse", type: "move", x: dx, y: dy }));
+                            }
+                        }
+                    })
+                }
+
+                lastSendTime = Date.now();
+
+            }, { passive: false });
+
+            // Добавление кнопок быстрого доступа
+
+            let quickButtons = JSON.parse(localStorage.getItem("quickButtons")) || [];
+            const containerQuickButtons = document.getElementById("box-quick-buttons");
+            quickButtons.sort((a, b) => b.weight - a.weight)
+
+            quickButtons.forEach((elem) => {
+                let elementForCopy = document.querySelector(`[data-action-${elem.type}="${elem.action}"]`)
+                let elementCopy = elementForCopy.cloneNode(true);
+                elementCopy.removeAttribute("data-weight");
+                elementCopy.style.marginBottom = "0";
+                elementCopy.style.marginRight = "0";
+                elementCopy.classList.add(`weight-${elem.weight}`);
+                containerQuickButtons.appendChild(elementCopy);
+            })
+
+            // Начало инициализации всех кнопок
+
+            document.addEventListener('click', (event) => {
+                if (event.target.closest('#touchpad')) {
+                    return;
+                }
+                console.log(isSelectionMode);
+                if (isSelectionMode) {
+                    let btnChoice = event.target.closest("[data-weight]");
+                    console.log(btnChoice)
+                    if (btnChoice) {
+                        const fullKey = Object.keys(btnChoice.dataset).find(key => key.startsWith('action'));
+                        let actionType = '';
+                        let actionValue = '';
+
+                        if (fullKey) {
+                            actionType = fullKey.replace('action', '').toLowerCase();
+
+                            actionValue = btnChoice.dataset[fullKey];
+
+                            console.log(`Тип: ${actionType}, Значение: ${actionValue}`);
+                        }
+                        if (btnChoice.classList.contains("input-wrapper")) {
+                            actionType = "keyboard";
+                            actionValue = "text";
+                        }
+
+                        if (checkElementToListLocalStorage(actionValue)) {
+                            deleteElementToListLocalStorage(actionValue)
+
+                            btnChoice.classList.add("not-selected");
+                            btnChoice.classList.remove('selected');
+                        } else {
+                            addElementToListLocalStorage({ type: actionType, action: actionValue, weight: btnChoice.dataset.weight })
+
+                            btnChoice.classList.remove("not-selected");
+                            btnChoice.classList.add('selected');
+                        }
+                    }
+                    return;
+                }
+
+                let btnMouse = event.target.closest("[data-action-mouse]");
+                if (btnMouse) {
+                    socket.send(JSON.stringify({
+                        input: "mouse",
+                        type: btnMouse.dataset.actionMouse
+                    }))
+                    return;
+                }
+
+                let btnMedia = event.target.closest("[data-action-media]");
+                if (btnMedia) {
+                    socket.send(JSON.stringify({ 
+                        input: "keyboard", 
+                        type: 'key', 
+                        value: btnMedia.dataset.actionMedia 
+                    }));
+                    return;
+                }
+
+                let btnCommand = event.target.closest("[data-action-command]");
+                if (btnCommand) {
+                    socket.send(JSON.stringify({ 
+                        input: "keyboard", 
+                        type: 'systemCommand', 
+                        value: btnCommand.dataset.actionCommand 
+                    }));
+                    return;
+                }
+            });
+
+
+            let middleClick = document.getElementById("middle-click")
+
+            middleClick.addEventListener("pointermove", (e) => {
+                const dy = e.movementY;
+                if (Math.abs(dy) > 0) {
+                    socket.send(JSON.stringify({ input: "mouse", type: "scroll", y: dy }));
+                }
+            })
+
+
+            document.addEventListener('beforeinput', (e) => {
+                const input = event.target.closest('[data-input]');
+                if (!input || !socket || socket.readyState !== WebSocket.OPEN) return;
+
+                let char = e.data;
+
+                if (char) {
+                    socket.send(JSON.stringify({ input: "keyboard", type: 'text', value: char }));
+                } else if (e.inputType === 'deleteContentBackward') {
+                    socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'backspace' }));
+                } else if (e.inputType === 'insertLineBreak') {
+                    socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'enter' }));
+                }
+
+                input.value = "";
+            });
+
+            document.addEventListener('mousedown', (e) => {
+                const input = event.target.closest('[data-input]');
+                if (!input) return;
+
+                e.preventDefault();
+
+                if (document.activeElement === input) {
+                    input.blur();
+                } else {
+                    input.focus();
+                }
+            });
+
+            document.addEventListener('focusin', (e) => {
+                const input = event.target.closest('[data-input]');
+                if (!input) return;
+
+                if (isSelectionMode) {
+                    input.blur();
+                    return;
+                }
+
+                const parent = input.closest('.input-wrapper') || input.parentElement;
+                const labels = parent.querySelectorAll(".input-label");
+
+                labels.forEach((item) => {
+                    item.textContent = "Ввод активирован";
+                    input.style.background = 'linear-gradient(to right, #63D72A 0%, #53C121 50%, #3D9A16 100%)';
+                });
+            });
+
+            document.addEventListener('focusout', (e) => {
+                const input = event.target.closest('[data-input]');
+                if (!input) return;
+
+                const parent = input.closest('.input-wrapper') || input.parentElement;
+                const labels = parent.querySelectorAll(".input-label");
+
+                labels.forEach((item) => {
+                    item.textContent = "Активировать ввод";
+                    input.style.background = '';
+                });
+            });
+
+
+
+            // const inputAll = document.querySelectorAll('[data-input]');
+
+            // inputAll.forEach((input) => {
+            //     input.addEventListener('beforeinput', (e) => {
+            //         let char = e.data;
+
+            //         if (char) {
+            //             socket.send(JSON.stringify({ input: "keyboard", type: 'text', value: char }));
+            //         } else if (e.inputType === 'deleteContentBackward') {
+            //             socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'backspace' }));
+            //         } else if (e.inputType === 'insertLineBreak') {
+            //             socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'enter' }));
+            //         }
+
+            //         input.value = "";
+            //     });
+
+            //     let labels = document.querySelectorAll(".input-label");
+            //     let inputActive = false;
+
+            //     input.addEventListener("mousedown", function (e) {
+            //         e.preventDefault();
+            //         if (inputActive) {
+            //             input.blur();
+            //         } else {
+            //             input.focus();
+            //         }
+            //     });
+
+            //     input.addEventListener("focus", function () {
+            //         if (isSelectionMode) {
+            //             input.blur();
+            //             return;
+            //         }
+
+            //         inputActive = true;
+            //         labels.forEach((item) => {
+            //             item.textContent = "Ввод активирован";
+            //             input.style.background = 'linear-gradient(to right, #63D72A 0%, #53C121 50%, #3D9A16 100%)';
+            //         })
+            //     })
+
+            //     input.addEventListener("blur", function () {
+            //         inputActive = false;
+
+            //         labels.forEach((item) => {
+            //             item.textContent = "Активировать ввод";
+            //             input.style.background = '';
+            //         })
+            //     })
+            // });
+
+
+            const checkbox = document.getElementById("changeInput");
+
+            checkbox.addEventListener("change", function () {
+                let boxController = document.getElementById("box-controller");
+                if (this.checked) {
+                    boxController.style.transform = "translateX(-50%)";
+                } else {
+                    boxController.style.transform = "translateX(0%)";
+                }
+            })
+
+            const choiceButton = document.getElementById("choiceButton");
+
+            choiceButton.addEventListener("change", function () {
+                let elementsChoice = document.querySelectorAll("[data-weight]");
+                isSelectionMode = this.checked;
+                if (this.checked) {
+                    elementsChoice.forEach((elem) => {
+
+                        let command = elem.dataset.actionMedia || elem.dataset.actionCommand || "text";
+
+                        if (checkElementToListLocalStorage(command)) {
+                            elem.classList.add("selected")
+                        } else {
+                            elem.classList.add("not-selected")
+                        }
+
+                    })
+                } else {
+                    elementsChoice.forEach((elem) => {
+
+                        elem.classList.remove("not-selected");
+                        elem.classList.remove("selected");
+                    })
+                }
+
+            })
+
+            function addElementToListLocalStorage(newItem) {
+                const currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
+
+                currentList.push(newItem);
+
+                localStorage.setItem("quickButtons", JSON.stringify(currentList));
+            }
+
+            function deleteElementToListLocalStorage(oldCommand) {
+                let currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
+                currentList = currentList.filter(item => !(item.action === oldCommand))
+
+                localStorage.setItem("quickButtons", JSON.stringify(currentList))
+            }
+
+            function checkElementToListLocalStorage(command) {
+                const currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
+                return currentList.some(item => item.action === command);
+            }
+
+
+
+        </script>
+</body>
+
+</html>
