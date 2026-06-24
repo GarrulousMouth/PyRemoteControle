@@ -744,61 +744,6 @@
                 });
             });
 
-
-
-            // const inputAll = document.querySelectorAll('[data-input]');
-
-            // inputAll.forEach((input) => {
-            //     input.addEventListener('beforeinput', (e) => {
-            //         let char = e.data;
-
-            //         if (char) {
-            //             socket.send(JSON.stringify({ input: "keyboard", type: 'text', value: char }));
-            //         } else if (e.inputType === 'deleteContentBackward') {
-            //             socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'backspace' }));
-            //         } else if (e.inputType === 'insertLineBreak') {
-            //             socket.send(JSON.stringify({ input: "keyboard", type: 'key', value: 'enter' }));
-            //         }
-
-            //         input.value = "";
-            //     });
-
-            //     let labels = document.querySelectorAll(".input-label");
-            //     let inputActive = false;
-
-            //     input.addEventListener("mousedown", function (e) {
-            //         e.preventDefault();
-            //         if (inputActive) {
-            //             input.blur();
-            //         } else {
-            //             input.focus();
-            //         }
-            //     });
-
-            //     input.addEventListener("focus", function () {
-            //         if (isSelectionMode) {
-            //             input.blur();
-            //             return;
-            //         }
-
-            //         inputActive = true;
-            //         labels.forEach((item) => {
-            //             item.textContent = "Ввод активирован";
-            //             input.style.background = 'linear-gradient(to right, #63D72A 0%, #53C121 50%, #3D9A16 100%)';
-            //         })
-            //     })
-
-            //     input.addEventListener("blur", function () {
-            //         inputActive = false;
-
-            //         labels.forEach((item) => {
-            //             item.textContent = "Активировать ввод";
-            //             input.style.background = '';
-            //         })
-            //     })
-            // });
-
-
             const checkbox = document.getElementById("changeInput");
 
             checkbox.addEventListener("change", function () {
