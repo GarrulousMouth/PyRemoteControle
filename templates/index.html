@@ -42,6 +42,7 @@
             display: flex;
             width: 200%;
             transition: transform 0.5s ease-in-out;
+            transform: translateX(-50%);
         }
 
         .checkbox-btn {
@@ -68,7 +69,8 @@
 
 
         .mouse,
-        .keyboard {
+        .keyboard,
+        .settings {
 
             width: 50%;
             flex-shrink: 0;
@@ -83,6 +85,11 @@
             margin-bottom: 48px;
         }
 
+        .body-mouse--square {
+            border-radius: 54px 54px 0px 0px !important;
+        }
+
+
         .mouse-touch {
             background-color: #ffffff08;
             touch-action: none;
@@ -91,9 +98,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            overflow: hidden;
+        }
+
+        .mouse-touch--square {
+            border-radius: 0 !important;
         }
 
         .icon-touchpad {
+            position: absolute;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -290,11 +303,26 @@
 <body>
     <div class="container">
         <div class="box-change-input">
+            <input class="checkbox-btn" type="checkbox" name="changeSettings" id="changeSettings">
+            <label class="checkbox-label" for="changeSettings">Настройки</label>
             <input class="checkbox-btn" type="checkbox" name="changeInput" id="changeInput">
             <label class="checkbox-label" for="changeInput">Переключить управление</label>
         </div>
         <div class="box-elements">
             <div class="box-controller" id="box-controller">
+                <div class="settings" id="settings">
+                    <div>
+                        <h5>Трансляция</h5>
+                        <input type="checkbox" name="activationStream" id="activationStream">
+                        <label for="activationStream">Активировать трансляцию</label>
+                        <input type="checkbox" name="activationInfinityStream" id="activationInfinityStream" disabled>
+                        <label for="activationInfinityStream">Активировать постоянную трансляцию </label>
+                        <input type="checkbox" name="activationSquare" id="activationSquare">
+                        <label for="activationSquare">Увеличить размер трансляции</label>
+                        <input style="width: 99%;" type="range" name="rangeZoopm" id="rangeZoom" min="0.5" max="5"
+                            value="1" step="0.5">
+                    </div>
+                </div>
                 <div class="mouse" id="mouse">
                     <div class="body-mouse">
                         <div class="touchpad-buttons">
@@ -321,8 +349,8 @@
                                             </clipPath>
                                         </defs>
                                     </svg>
-
                                 </div>
+                                <canvas id="stream-canvas"></canvas>
                             </div>
                         </div>
                     </div>
@@ -416,6 +444,9 @@
                                 data-input="text">
                             <label for="hidden-input" class="input-label">Активировать ввод</label>
                         </div>
+                        <div class="group-button">
+
+                        </div>
                         <div class="group-button group-button__center">
                             <div class="button button-command" data-weight="1" data-action-command="changeLayout">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -472,7 +503,12 @@
         </div>
 
         <script>
-
+            /* 
+            Комментарии тут мои, а не ИИ. Да, код, вероятно, не идеален,
+            но хотя бы написан мной с душой, любовью, гуглом и всё такое.
+            А комментарии чисто для души, чтобы не забыть вообще, что, где
+            и зачем делает.
+            */
             let socket;
             let url = `ws://${window.location.host}/ws`
 
@@ -484,7 +520,7 @@
             let isScrolling = false;
             let isSelectionMode = false;
 
-            const touchpad = document.getElementById('touchpad');
+            const boxController = document.getElementById("box-controller");
 
             function connect() {
                 console.log("Connection attempt")
@@ -492,6 +528,10 @@
 
                 socket.onopen = () => {
                     console.log("Connection completed")
+
+                    if (typeof resizeCanvas === "function") {
+                        resizeCanvas();
+                    }
                 }
 
                 socket.onclose = (e) => {
@@ -509,14 +549,28 @@
 
             connect();
 
+            const touchpad = document.getElementById('touchpad');
 
+            // Отслеживание нажатия на тачпад
             touchpad.addEventListener('pointerdown', (e) => {
+                e.preventDefault();
                 let iconTouchpad = document.getElementsByClassName("icon-touchpad");
                 iconTouchpad[0].style.display = "none"
                 touchpad.style.background = "#D9D9D916";
+                /*
+                Переменная для отслеживания колиечества кликов.
+                Там дальше идёт таймер, чтобы в это время отследить,
+                был второй клик или нет, чтобы можно было объекты перемещать
+                и всё такое.
+                */
                 clickCount++;
                 clearTimeout(clickTimer)
                 isMoving = false;
+                /*
+                А здесь проверка на то сколько пальцев нажато для активации
+                скролла.
+                */
+                sendStreamState(true);
                 activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY })
                 if (clickCount === 1) {
                     clickTimer = setTimeout(() => {
@@ -536,10 +590,13 @@
 
             }, { passive: false });
 
+            // Отслеживание поднятия пальца и очищение всех переменных
             touchpad.addEventListener('pointerup', (e) => {
                 let iconTouchpad = document.getElementsByClassName("icon-touchpad");
                 touchpad.style.background = "#FFFFFF08";
                 iconTouchpad[0].style.display = "flex"
+
+                sendStreamState(false);
 
                 isScrolling = false;
                 activePointers.delete(e.pointerId);
@@ -554,6 +611,7 @@
             let lastSendTime = 0;
             const THROTTTLE_MS = 8;
 
+            // Здесь передвижение пальца по тачпаду и отправка дельты на сервер
             touchpad.addEventListener("pointermove", function (e) {
                 e.preventDefault();
                 isMoving = true;
@@ -566,14 +624,12 @@
                 if (Date.now() - lastSendTime > THROTTTLE_MS) {
                     requestAnimationFrame(() => {
 
-
                         if (isScrolling) {
                             if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
                                 socket.send(JSON.stringify({ input: "mouse", type: "scroll", y: dy }));
                             }
                         } else {
                             if (Math.abs(dx) > 0 || Math.abs(dy) > 0) {
-
                                 socket.send(JSON.stringify({ input: "mouse", type: "move", x: dx, y: dy }));
                             }
                         }
@@ -584,29 +640,34 @@
 
             }, { passive: false });
 
-            // Добавление кнопок быстрого доступа
+            // Добавление кнопок быстрого доступа, сохранённый в localstorage
+            function addQuickButtons() {
+                const containerQuickButtons = document.getElementById("box-quick-buttons");
+                containerQuickButtons.innerHTML = "";
 
-            let quickButtons = JSON.parse(localStorage.getItem("quickButtons")) || [];
-            const containerQuickButtons = document.getElementById("box-quick-buttons");
-            quickButtons.sort((a, b) => b.weight - a.weight)
+                let quickButtons = JSON.parse(localStorage.getItem("quickButtons")) || [];
+                quickButtons.sort((a, b) => b.weight - a.weight)
 
-            quickButtons.forEach((elem) => {
-                let elementForCopy = document.querySelector(`[data-action-${elem.type}="${elem.action}"]`)
-                let elementCopy = elementForCopy.cloneNode(true);
-                elementCopy.removeAttribute("data-weight");
-                elementCopy.style.marginBottom = "0";
-                elementCopy.style.marginRight = "0";
-                elementCopy.classList.add(`weight-${elem.weight}`);
-                containerQuickButtons.appendChild(elementCopy);
-            })
+                quickButtons.forEach((elem) => {
+                    let elementForCopy = document.querySelector(`[data-action-${elem.type}="${elem.action}"]`)
+                    let elementCopy = elementForCopy.cloneNode(true);
+                    elementCopy.removeAttribute("data-weight");
+                    elementCopy.style.marginBottom = "0";
+                    elementCopy.style.marginRight = "0";
+                    elementCopy.classList.add(`weight-${elem.weight}`);
+                    containerQuickButtons.appendChild(elementCopy);
+                })
+            }
+
+            addQuickButtons();
 
             // Начало инициализации всех кнопок
-
             document.addEventListener('click', (event) => {
+                // Событие тачпада не отслеживаем
                 if (event.target.closest('#touchpad')) {
                     return;
                 }
-                console.log(isSelectionMode);
+                // Здесь добавление кнопок в быстрый доступ
                 if (isSelectionMode) {
                     let btnChoice = event.target.closest("[data-weight]");
                     console.log(btnChoice)
@@ -641,7 +702,7 @@
                     }
                     return;
                 }
-
+                // Обработка клавиш мыши
                 let btnMouse = event.target.closest("[data-action-mouse]");
                 if (btnMouse) {
                     socket.send(JSON.stringify({
@@ -650,31 +711,30 @@
                     }))
                     return;
                 }
-
+                // Обработка клавиш мультимедиа
                 let btnMedia = event.target.closest("[data-action-media]");
                 if (btnMedia) {
-                    socket.send(JSON.stringify({ 
-                        input: "keyboard", 
-                        type: 'key', 
-                        value: btnMedia.dataset.actionMedia 
+                    socket.send(JSON.stringify({
+                        input: "keyboard",
+                        type: 'key',
+                        value: btnMedia.dataset.actionMedia
                     }));
                     return;
                 }
-
+                // Обработка клавиш для комманд, типа вставки, копирования и т.д.
                 let btnCommand = event.target.closest("[data-action-command]");
                 if (btnCommand) {
-                    socket.send(JSON.stringify({ 
-                        input: "keyboard", 
-                        type: 'systemCommand', 
-                        value: btnCommand.dataset.actionCommand 
+                    socket.send(JSON.stringify({
+                        input: "keyboard",
+                        type: 'systemCommand',
+                        value: btnCommand.dataset.actionCommand
                     }));
                     return;
                 }
             });
 
-
             let middleClick = document.getElementById("middle-click")
-
+            // А тут отслеживание средней кнопки мыши, чтобы  можно было скроллить
             middleClick.addEventListener("pointermove", (e) => {
                 const dy = e.movementY;
                 if (Math.abs(dy) > 0) {
@@ -682,7 +742,9 @@
                 }
             })
 
-
+            /* 
+            Дальше идёт обработка ввода текста с клавиатуры
+            */
             document.addEventListener('beforeinput', (e) => {
                 const input = event.target.closest('[data-input]');
                 if (!input || !socket || socket.readyState !== WebSocket.OPEN) return;
@@ -744,44 +806,23 @@
                 });
             });
 
-            const checkbox = document.getElementById("changeInput");
 
-            checkbox.addEventListener("change", function () {
-                let boxController = document.getElementById("box-controller");
-                if (this.checked) {
-                    boxController.style.transform = "translateX(-50%)";
-                } else {
-                    boxController.style.transform = "translateX(0%)";
-                }
-            })
+            // const changeInput = document.getElementById("changeInput");
+            // // Здесь событие для открытия меню клавиш
+            // changeInput.addEventListener("change", function () {
+            //     let boxController = document.getElementById("box-controller");
+            //     if (this.checked) {
+            //         boxController.style.transform = "translateX(-50%)";
+            //     } else {
+            //         boxController.style.transform = "translateX(-00%)";
+            //     }
+            // })
 
-            const choiceButton = document.getElementById("choiceButton");
 
-            choiceButton.addEventListener("change", function () {
-                let elementsChoice = document.querySelectorAll("[data-weight]");
-                isSelectionMode = this.checked;
-                if (this.checked) {
-                    elementsChoice.forEach((elem) => {
-
-                        let command = elem.dataset.actionMedia || elem.dataset.actionCommand || "text";
-
-                        if (checkElementToListLocalStorage(command)) {
-                            elem.classList.add("selected")
-                        } else {
-                            elem.classList.add("not-selected")
-                        }
-
-                    })
-                } else {
-                    elementsChoice.forEach((elem) => {
-
-                        elem.classList.remove("not-selected");
-                        elem.classList.remove("selected");
-                    })
-                }
-
-            })
-
+            /*
+            Функцит для добавления, удаления и проверки элементов
+            в localstorage.
+            */
             function addElementToListLocalStorage(newItem) {
                 const currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
 
@@ -802,7 +843,237 @@
                 return currentList.some(item => item.action === command);
             }
 
+            // Приём видео с сервера
+            const canvas = document.getElementById('stream-canvas');
+            const ctx = canvas.getContext('2d');
+            const img = new Image();
 
+            let isStreamingActive = false;
+
+
+            let zoom = 2;
+
+            socket.binaryType = "blob";
+
+            function resizeCanvas() {
+                // Получаем фактические размеры div с учетом паддингов
+                canvas.width = touchpad.clientWidth;
+                canvas.height = touchpad.clientHeight;
+
+                socket.send(JSON.stringify({
+                    "canvas_width": canvas.width,
+                    "canvas_height": canvas.height,
+                    "zoom": 2
+                }));
+            }
+            // (Опционально) Добавляем отслеживание изменения размеров окна 
+            window.addEventListener('resize', resizeCanvas);
+
+            // 1. Отрисовка кадра на Canvas, когда картинка загрузилась в память
+            img.onload = function () {
+                if (!isStreamingActive) return;
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(img, 0, 0);
+
+                // Критически важно для мобильных браузеров: очищаем ссылку, 
+                // чтобы не забить оперативную память смартфона (Memory Leak)
+                URL.revokeObjectURL(img.src);
+            };
+
+            // 2. Главный обработчик входящих сообщений
+            socket.onmessage = function (event) {
+                // ПРОВЕРКА: Если пришли бинарные данные — это наш кадр WebP
+                if (event.data instanceof Blob) {
+                    // Создаем временную внутреннюю URL-ссылку на бинарный Blob
+                    if (!isStreamingActive) {
+                        URL.revokeObjectURL(URL.createObjectURL(event.data))
+                    }
+                    img.src = URL.createObjectURL(event.data);
+                }
+                // Если пришел текст — обрабатываем его как обычную команду (если нужно)
+                else {
+                    try {
+                        const textData = JSON.parse(event.data);
+                        console.log("Получен текст от сервера:", textData);
+                    } catch (e) {
+                        console.log("Получен не JSON текст:", event.data);
+                    }
+                }
+            };
+
+
+
+            function sendStreamState(isEnabled) {
+                if (!isStreamTemporaryActive) {
+                    return;
+                }
+
+                if (isInfinityStreamActive) {
+                    isEnabled = isInfinityStreamActive;
+                }
+
+                isStreamingActive = isEnabled;
+
+
+                if (socket && socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({ "stream": isEnabled }));
+                }
+
+                if (!isInfinityStreamActive) {
+                    const ctx = canvas.getContext('2d');
+                    console.log(ctx)
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                }
+            }
+
+            let isStreamTemporaryActive = document.getElementById("activationStream").checked;
+
+            // activationStream.addEventListener("change", (e) => {
+            //     const isChecked = e.target.checked;
+            //     isStreamTemporaryActive = isChecked;
+            //     if (!isChecked) {
+            //         socket.send(JSON.stringify({ "stream": false }));
+
+            //         isStreamingActive = false;
+
+            //         activationInfinityStream.checked = false;
+
+            //         const ctx = canvas.getContext('2d');
+            //         ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+            //     }
+            //     activationInfinityStream.disabled = !isChecked;
+            // })
+
+            // const activationInfinityStream = document.getElementById("activationInfinityStream")
+            let isInfinityStreamActive = document.getElementById("activationInfinityStream").checked;
+            // activationInfinityStream.addEventListener("change", (e) => {
+            //     const isChecked = e.target.checked;
+            //     isInfinityStreamActive = isChecked;
+            //     sendStreamState(isChecked);
+            // })
+
+            // const activationSquare = document.getElementById("activationSquare");
+
+            // activationSquare.addEventListener("change", (e) => {
+            //     const isChecked = e.target.checked
+            //     let bodyMouse = document.getElementsByClassName("body-mouse")[0]
+
+            //     bodyMouse.classList.toggle("body-mouse--square");
+            //     touchpad.classList.toggle("mouse-touch--square")
+            // })
+
+            // const rangeZoom = document.getElementById("rangeZoom");
+
+            // rangeZoom.addEventListener("change", (e) => {
+            //     socket.send(JSON.stringify({
+            //         "canvas_width": canvas.width,
+            //         "canvas_height": canvas.height,
+            //         "zoom": e.target.value
+            //     }));
+            // })
+
+            document.addEventListener("change", (event) => {
+                let btnChangeInput = event.target.closest("#changeInput");
+                if (btnChangeInput) {
+                    if (btnChangeInput.checked) {
+                        boxController.style.transform = "translateX(-100%)";
+                    } else {
+                        boxController.style.transform = "translateX(-50%)";
+                    }
+                    return;
+                }
+
+                let btnChangeSettings = event.target.closest("#changeSettings");
+
+                if (btnChangeSettings) {
+                    if (btnChangeSettings.checked) {
+                        boxController.style.transform = "translateX(0%)";
+                    } else {
+                        boxController.style.transform = "translateX(-50%)";
+                    }
+                    return;
+                }
+
+                let btnChoice = event.target.closest("#choiceButton");
+
+                if (btnChoice) {
+                    let elementsChoice = document.querySelectorAll("[data-weight]");
+                    isSelectionMode = event.target.checked;
+                    if (isSelectionMode) {
+                        elementsChoice.forEach((elem) => {
+                            let command = elem.dataset.actionMedia || elem.dataset.actionCommand || "text";
+                            if (checkElementToListLocalStorage(command)) {
+                                elem.classList.add("selected")
+                            } else {
+                                elem.classList.add("not-selected")
+                            }
+                        })
+                    } else {
+                        elementsChoice.forEach((elem) => {
+                            elem.classList.remove("not-selected");
+                            elem.classList.remove("selected");
+                        })
+                        addQuickButtons();
+                    }
+                    return;
+                }
+
+                let checkActivationStream = event.target.closest("#activationStream");
+                if (checkActivationStream) {
+                    isStreamTemporaryActive = checkActivationStream.checked;
+
+                    const isChecked = checkActivationStream.checked
+
+                    if (!isChecked) {
+                        socket.send(JSON.stringify({ "stream": false }));
+
+                        isStreamingActive = false;
+
+                        activationInfinityStream.checked = false;
+
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    }
+                    activationInfinityStream.disabled = !isChecked;
+                    return;
+                }
+
+
+                let checkInfinityStreamActive = event.target.closest("#activationInfinityStream");
+
+                if (checkInfinityStreamActive) {
+                    isInfinityStreamActive = checkInfinityStreamActive.checked;
+                    const isChecked = checkInfinityStreamActive.checked;
+
+                    sendStreamState(isChecked);
+                    return
+                }
+
+                let checkActivationSquare = event.target.closest("#activationSquare");
+
+                if (checkActivationSquare) {
+                    let bodyMouse = document.getElementsByClassName("body-mouse")[0];
+
+                    bodyMouse.classList.toggle("body-mouse--square");
+                    touchpad.classList.toggle("mouse-touch--square");
+                    return;
+                }
+
+                let rangeZoom = event.target.closest("#rangeZoom");
+
+                if (rangeZoom) {
+                    socket.send(JSON.stringify({
+                        "canvas_width": canvas.width,
+                        "canvas_height": canvas.height,
+                        "zoom": rangeZoom.value
+                    }));
+                    return;
+                }
+
+            })
 
         </script>
 </body>
