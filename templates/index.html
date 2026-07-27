@@ -4,13 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <title>RemoteControl</title>
     <style>
+        :root {
+            --gradient-color: linear-gradient(135deg, #00FFFF 0%, #0000FF 100%);
+            --gradint-color-selected: linear-gradient(135deg, #00DEE2 0%, #0609CD 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #0F032D;
+            background-color: #050A30;
             color: #fff;
-            font-size: 16px;
-            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            line-height: 148%;
+            font-family: "Montserrat", 'Inter', sans-serif;
         }
 
         svg,
@@ -19,18 +33,88 @@
         }
 
         .container {
-            box-sizing: border-box;
             position: relative;
             width: 335px;
             margin: 0 auto;
-            margin-top: 48px;
+            margin-top: 32px;
             display: flex;
             flex-direction: column;
 
         }
 
+        .box-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--gradient-color);
+            border-radius: 100px;
+            height: 100%;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .box-btn:active {
+            background: var(--gradint-color-selected);
+        }
+
+        .box-btn path {
+            fill: white;
+        }
+
+        
+
         .box-change-input {
-            margin-bottom: 74px;
+            width: 100%;
+            margin-bottom: 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .box-btn-settings {
+            width: 48px;
+            height: 48px;
+
+        }
+
+        .box-btn-remote {
+            height: 48px;
+            width: 267px;
+        }
+
+        .box-arrow {
+            background-color: #FFFFFF1A;
+            height: 48px;
+            width: 48px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 100px;
+            cursor: pointer;
+
+        }
+
+        h5 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .box-arrow {
+            fill: white;
+        }
+
+        .box-title-setting {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 48px;
+            align-items: center;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 600;
         }
 
         .box-elements {
@@ -53,18 +137,18 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 100%;
-            padding: 16px 0;
-            background: linear-gradient(to right, #843CEB 0%, #4C00FF 100%);
+            background: var(--gradient-color);
             border-radius: 100px;
+            height: 100%;
             cursor: pointer;
             transition: background-color 0.3s;
+            height: 48px;
             -webkit-tap-highlight-color: transparent;
         }
 
+
         .checkbox-btn:checked+.checkbox-label {
-            background: linear-gradient(to right, #752AD7 0%, #3C00D4 100%);
-            color: white;
+            background: var(--gradint-color-selected);
         }
 
 
@@ -77,24 +161,31 @@
             position: relative;
         }
 
-        .body-mouse {
-            border: 4px solid #fff;
-            border-radius: 320px 320px 1000px 1000px;
+        .mouse {
             display: flex;
             flex-direction: column;
-            margin-bottom: 48px;
+            align-items: center;
+        }
+
+        .body-mouse {
+            border: 4px solid #fff;
+            border-radius: 200px 200px 200px 200px;
+            display: flex;
+            width: 243px;
+            flex-direction: column;
+            margin-bottom: 32px;
+            transition: all 0.5s ease-out;
         }
 
         .body-mouse--square {
-            border-radius: 54px 54px 0px 0px !important;
+            border-radius: 200px 200px 20px 20px !important;
         }
 
 
         .mouse-touch {
-            background-color: #ffffff08;
             touch-action: none;
             border-radius: 20px 20px 1000px 1000px;
-            height: 242px;
+            height: 225px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -111,9 +202,9 @@
             justify-content: center;
             align-items: center;
             border-radius: 100px;
-            width: 56px;
-            height: 56px;
-            background-color: #FFFFFF16;
+            width: 48px;
+            height: 48px;
+            background-color: #FFFFFF20;
             animation: pulse 1.5s infinite
         }
 
@@ -139,14 +230,13 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            height: 100%;
         }
 
         .button-mouse {
             width: 126px;
-            border: 4px solid #fff;
-            height: 184px;
-            margin-top: -4px;
+            border-bottom: 4px solid #fff;
+            height: 158px;
         }
 
         .button-mouse:active {
@@ -154,19 +244,19 @@
         }
 
         .mouse-left {
-            border-radius: 32px 0 0 32px;
-            border-right: none;
+            border-radius: 1000px 0 0 0;
+            border-right: 4px solid #fff;
         }
 
         .mouse-right {
-            border-radius: 0 32px 32px 0;
+            border-radius: 0 1000px 0 0;
         }
 
         .mouse-middle {
             position: absolute;
             width: 40px;
             height: 80px;
-            background: linear-gradient(#843CEB 0%, #4C00FF 100%);
+            background: var(--gradient-color);
             border: 4px solid #fff;
             border-radius: 100px;
             z-index: 3;
@@ -174,7 +264,7 @@
         }
 
         .mouse-middle:active {
-            background: linear-gradient(#752AD7 0%, #3C00D4 100%);
+            background: var(--gradint-color-selected);
         }
 
         .group-button {
@@ -188,10 +278,13 @@
             justify-content: center;
         }
 
-        .group-button:not(:last-child) {
-            margin-bottom: 48px;
-            padding-top: 40px;
+        .group-button__arows {
+            display: flex;
+            justify-content: space-between;
+            flex-direction: column;
+            height: 132px;
         }
+
 
         .button {
             display: flex;
@@ -199,12 +292,13 @@
             align-items: center;
             width: 48px;
             height: 48px;
-            border: 1px solid #FFFFFF40;
             border-radius: 100px;
+            position: relative;
+            background: #FFFFFF1A;
         }
 
         .button:active {
-            background: #FFFFFF16;
+            background: #FFFFFF25;
         }
 
         .button-command:not(:last-child) {
@@ -221,18 +315,21 @@
         .input-wrapper {
             position: relative;
             width: 99%;
-            margin-bottom: 148px;
+            font-size: 14px;
+            height: 40px;
             display: flex;
             justify-content: center;
             border: 1px solid #FFFFFF40;
             border-radius: 100px;
         }
 
+        .input-wrapper_m {
+            margin-bottom: 48px;
+        }
+
         .input-string {
             width: 100%;
-            ;
             padding: 0;
-            height: 52px;
             color: transparent;
             caret-color: transparent;
             background-color: transparent;
@@ -261,19 +358,210 @@
             transition: 0.2s ease all;
         }
 
-        .not-selected {
+        /* .not-selected {
             border: 1px solid red;
+            border-radius: 100px;
+        } */
+
+        .not-selected::after {
+            content: "";
+            height: 12px;
+            width: 12px;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 2L4 2M2 4L2 0" stroke="white" stroke-width="0.64" stroke-linejoin="round"/></svg>');
+            background-color: #00CC00;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 4px 4px;
+            position: absolute;
+            top: 2px;
+            right: 2px;
             border-radius: 100px;
         }
 
-        .selected {
+        /* .selected {
             border: 1px solid green;
+        } */
+
+        .selected::after {
+            content: "";
+            height: 12px;
+            width: 12px;
+            background-image: url('data:image/svg+xml;utf8,<svg width="4" height="4" viewBox="0 0 4 4" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.226286 3.0547L3.05471 0.226274M3.05471 3.0547L0.226286 0.226274" stroke="white" stroke-width="0.64" stroke-linejoin="round"/></svg>');
+            background-color: #FF0000;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: 4px 4px;
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            border-radius: 100px;
         }
 
-        #box-quick-buttons {
+        .container-lock {
+            display: flex;
+            align-items: center;
+            margin-right: 12px;
+        }
+
+        .container-hotkeys {
+            display: flex;
+        }
+
+        #container-hotkeys {
+            position: fixed;
+            z-index: 5;
+            background-color: #050A30;
+            top: 20px;
+            height: 150px;
+            /* left: 23vw; */
+            margin: 0 auto;
+            width: 335px;
+            border-bottom: 2px solid #414562;
+            border-radius: 0 0 20px 20px;
+            transform: translateY(-130px);
+            transition: all 0.5s ease-out;
+        }
+
+        #openHotkeys {
+            width: 100%;
+            height: 40px;
+        }
+        #visible-hotkeys {
+            width: 100%;
+        }
+
+        .btn-open {
+            position: absolute;
+            bottom: 20px;
+            left: 143px;
+
+            display: block;
+            height: 4px;
+            width: 48px;
+            background-color: #414562;
+            border-radius: 5px;
+        }
+
+        .change-transform-hotkeys {
+            transform: translateY(0) !important;
+        }
+
+        .change-transform-bodymouse {
+            transform: translateY(80px) !important;
+        }
+
+        .notvisible-transform-hotkeys {
+            transform: translateY(-200px) !important;
+        }
+
+        .d-none {
+            display: none !important;
+        }
+
+        .box-hotkeys {
             display: grid;
+            width: 100%;
             grid-template-columns: repeat(5, 1fr);
             gap: 10px;
+        }
+
+        .checkbox-settings {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            margin-left: 0;
+            border: 1.25px solid #FFFFFF;
+            border-radius: 6px;
+            /* background: linear-gradient(135deg, #00FFFF, #0000FF); */
+        }
+
+        .checkbox-settings:checked {
+            background: var(--gradient-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 0;
+
+        }
+
+        .checkbox-settings:disabled {
+            border: 1.25px solid #FFFFFF52;
+            background: none;
+        }
+
+        .checkbox-settings:checked::after {
+            content: "";
+            display: block;
+            background: url('data:image/svg+xml;utf8,<svg width="10" height="7" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.625 3.455L3.455 6.285L9.125 0.625" stroke="white" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/></svg>');
+            height: 8.5px;
+            width: 8.5px;
+            background-repeat: no-repeat;
+        }
+
+        .box-checkbox-settings {
+            display: flex;
+            align-items: center;
+        }
+
+        .box-checkbox-settings:not(:last-child) {
+            margin-bottom: 12px;
+        }
+
+        .box-checkbox-settings:has(+ :not(.box-checkbox-settings)) {
+            margin-bottom: 20px;
+        }
+
+        .range {
+            -webkit-appearance: none;
+            background: transparent;
+            appearance: none;
+            border-radius: 2px;
+            width: 300px;
+        }
+
+        .box-range-input {
+            padding-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .range::-webkit-slider-runnable-track {
+            background: linear-gradient(to right, #00FFFF, 15%, #0000FF) no-repeat #FFFFFF29;
+            background-size: var(--progress, 0%) 100%;
+            height: 4px;
+            border-radius: 2px;
+        }
+
+        .range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            background: linear-gradient(to bottom, #00FFFF, 15%, #0000FF);
+            background-repeat: no-repeat;
+            border: 0;
+            margin-top: -4px;
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+        }
+
+        .range::-moz-range-track {
+            background: #FFFFFF29;
+            border-radius: 2px;
+            height: 4px;
+        }
+
+        .range::-moz-range-thumb {
+            background: linear-gradient(135deg, #00FFFF, 10%, #0000FF);
+            background-repeat: no-repeat;
+            border: 0;
+            height: 12px;
+        }
+
+        .range::-moz-range-progress {
+            border-radius: 2px;
+            background: linear-gradient(to right, #00FFFF, 15%, #0000FF);
+            height: 4px;
         }
 
         .weight-1 {
@@ -302,28 +590,139 @@
 
 <body>
     <div class="container">
-        <div class="box-change-input">
-            <input class="checkbox-btn" type="checkbox" name="changeSettings" id="changeSettings">
-            <label class="checkbox-label" for="changeSettings">Настройки</label>
-            <input class="checkbox-btn" type="checkbox" name="changeInput" id="changeInput">
-            <label class="checkbox-label" for="changeInput">Переключить управление</label>
+        <div class="notvisible-transform-hotkeys" id="container-hotkeys">
+            <div class="input-wrapper" data-action-keyboard="text" style="margin-bottom: 20px;">
+                <input class="input-string" autocapitalize="none" type="text" name="hidden-input" data-input="text">
+                <label for="hidden-input" class="input-label">Активировать ввод</label>
+            </div>
+            <div class="container-hotkeys">
+                <div class="container-lock">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 17.35C12.9002 17.35 13.63 16.6202 13.63 15.72C13.63 14.8198 12.9002 14.09 12 14.09C11.0998 14.09 10.37 14.8198 10.37 15.72C10.37 16.6202 11.0998 17.35 12 17.35Z"
+                            fill="url(#paint0_linear_38_174)" />
+                        <path
+                            d="M18.28 9.53V8.28C18.28 5.58 17.63 2 12 2C6.37 2 5.72 5.58 5.72 8.28V9.53C2.92 9.88 2 11.3 2 14.79V16.65C2 20.75 3.25 22 7.35 22H16.65C20.75 22 22 20.75 22 16.65V14.79C22 11.3 21.08 9.88 18.28 9.53ZM12 18.74C10.33 18.74 8.98 17.38 8.98 15.72C8.98 14.05 10.34 12.7 12 12.7C13.66 12.7 15.02 14.06 15.02 15.72C15.02 17.39 13.67 18.74 12 18.74ZM7.35 9.44C7.27 9.44 7.2 9.44 7.12 9.44V8.28C7.12 5.35 7.95 3.4 12 3.4C16.05 3.4 16.88 5.35 16.88 8.28V9.45C16.8 9.45 16.73 9.45 16.65 9.45H7.35V9.44Z"
+                            fill="url(#paint1_linear_38_174)" />
+                        <defs>
+                            <linearGradient id="paint0_linear_38_174" x1="2" y1="2" x2="22" y2="22"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00FFFF" />
+                                <stop offset="1" stop-color="#0000FF" />
+                            </linearGradient>
+                            <linearGradient id="paint1_linear_38_174" x1="2" y1="2" x2="22" y2="22"
+                                gradientUnits="userSpaceOnUse">
+                                <stop stop-color="#00FFFF" />
+                                <stop offset="1" stop-color="#0000FF" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+
+                <div class="box-hotkeys" id="box-hotkeys">
+
+
+                </div>
+            </div>
+            <div id="openHotkeys">
+                <span class="btn-open"></span>
+            </div>
+
         </div>
         <div class="box-elements">
             <div class="box-controller" id="box-controller">
+
+
                 <div class="settings" id="settings">
+                    <div class="box-title-setting">
+                        <h3>Настройки</h3>
+                        <div class="box-arrow" id="backToMainFromSettings">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M13.9883 5.48762C14.2323 5.24392 14.6281 5.24381 14.8721 5.48762L20.9424 11.5579C21.0595 11.6751 21.125 11.8346 21.125 12.0003C21.1249 12.1658 21.0593 12.3246 20.9424 12.4417L14.8721 18.512C14.628 18.7561 14.2324 18.756 13.9883 18.512C13.7442 18.268 13.7442 17.8723 13.9883 17.6282L18.9902 12.6253H3.5C3.15493 12.6253 2.87517 12.3453 2.875 12.0003C2.875 11.6551 3.15482 11.3753 3.5 11.3753H18.9912L13.9883 6.37238C13.7442 6.1283 13.7442 5.73169 13.9883 5.48762Z"
+                                    fill="white" />
+                            </svg>
+
+                        </div>
+                    </div>
                     <div>
                         <h5>Трансляция</h5>
-                        <input type="checkbox" name="activationStream" id="activationStream">
-                        <label for="activationStream">Активировать трансляцию</label>
-                        <input type="checkbox" name="activationInfinityStream" id="activationInfinityStream" disabled>
-                        <label for="activationInfinityStream">Активировать постоянную трансляцию </label>
-                        <input type="checkbox" name="activationSquare" id="activationSquare">
-                        <label for="activationSquare">Увеличить размер трансляции</label>
-                        <input style="width: 99%;" type="range" name="rangeZoopm" id="rangeZoom" min="0.5" max="5"
-                            value="1" step="0.5">
+                        <div class="box-checkbox-settings">
+                            <input class="checkbox-settings" type="checkbox" name="activationStream"
+                                id="activationStream">
+                            <label class="checkbox-settings-label" for="activationStream">Активировать
+                                трансляцию</label>
+                        </div>
+                        <div class="box-checkbox-settings">
+                            <input class="checkbox-settings" type="checkbox" name="activationInfinityStream"
+                                id="activationInfinityStream" disabled>
+                            <label class="checkbox-settings-label" for="activationInfinityStream">Активировать
+                                постоянную трансляцию </label>
+                        </div>
+                        <div class="box-checkbox-settings">
+                            <input class="checkbox-settings" type="checkbox" name="activationSquare"
+                                id="activationSquare">
+                            <label class="checkbox-settings-label" for="activationSquare">Увеличить размер
+                                трансляции</label>
+                        </div>
+                        <div>
+                            <label class="range-label" for="rangeZoom">Увеличить zoom трансляции</label>
+                            <div class="box-range-input">
+                                <input class="range" type="range" name="rangeZoom" id="rangeZoom" min="0.5" max="5"
+                                    value="1" step="0.5" oninput="rangeZoomOutput.value = rangeZoom.value">
+                                <output id="rangeZoomOutput" for="rangeZoom"></output>
+                            </div>
+
+
+                        </div>
+
+                    </div>
+                    <div>
+                        <h5>Мышь</h5>
+                        <div>
+                            <label class="range-label" for="rangeSensitivity">Изменить скорость мыши</label>
+                            <div class="box-range-input">
+                                <input class="range" type="range" name="rangeSensitivity" id="rangeSensitivity"
+                                    min="0.5" max="6" value="2.5" step="0.5"
+                                    oninput="rangeSensitivityOutput.value = rangeSensitivity.value">
+                                <output id="rangeSensitivityOutput" for="rangeSensitivity"></output>
+                            </div>
+
+                        </div>
+                        <div>
+                            <label class="range-label" for="rangeScroll">Изменить скорость скролла</label>
+
+                            <div class="box-range-input">
+                                <input class="range" type="range" name="rangeScroll" id="rangeScroll" min="0.03" max="1"
+                                    value="0.1" step="0.03" oninput="rangeScrollOutput.value = rangeScroll.value">
+                                <output id="rangeScrollOutput" for="rangeScroll"></output>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h5>Общие настройки</h5>
+                        <div class="box-checkbox-settings">
+                            <input class="checkbox-settings" type="checkbox" name="fixedQuick" id="fixedQuick">
+                            <label class="checkbox-settings-label" for="fixedQuick">Закрепить быстрые клавиши</label>
+                        </div>
+
                     </div>
                 </div>
                 <div class="mouse" id="mouse">
+                    <div class="box-change-input">
+                        <div class="box-btn box-btn-settings" id="changeSettings">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M21.3848 11.1197C21.3846 10.4172 20.8071 9.84545 20.1104 9.84526C19.0722 9.84526 18.1764 9.47293 17.7285 8.69585C17.2806 7.91863 17.408 6.95631 17.9297 6.0562C18.2763 5.4548 18.0673 4.66992 17.46 4.3228L15.7295 3.33257L15.7207 3.32671C15.2393 3.04032 14.5976 3.20405 14.2969 3.70952L14.1904 3.89311C13.6689 4.79295 12.8976 5.38237 12.001 5.38237C11.1035 5.38225 10.334 4.7923 9.81738 3.89116V3.89018L9.71289 3.70952L9.65234 3.6187C9.33244 3.18564 8.7412 3.05867 8.29004 3.32671L8.28027 3.33257L6.55078 4.3228H6.5498C5.94265 4.66995 5.7336 5.45487 6.08008 6.0562C6.6018 6.95631 6.72914 7.91863 6.28125 8.69585C5.83344 9.47276 4.93831 9.84517 3.90039 9.84526C3.19781 9.84526 2.62517 10.4229 2.625 11.1197V12.8804C2.62524 13.5772 3.19785 14.1548 3.90039 14.1548C4.93836 14.1549 5.83346 14.5273 6.28125 15.3042C6.70115 16.0329 6.61603 16.9238 6.17383 17.774L6.08105 17.9429C5.73371 18.5444 5.94225 19.33 6.5498 19.6773H6.55078L8.28027 20.6675L8.29004 20.6724C8.76945 20.9575 9.40677 20.797 9.70898 20.2964L9.81934 20.107L9.91992 19.9419C10.4377 19.1356 11.1681 18.6177 12.0088 18.6177C12.9063 18.6177 13.6757 19.2077 14.1924 20.1089H14.1914L14.3008 20.2964C14.603 20.7972 15.2412 20.9577 15.7207 20.6724L15.7295 20.6675L17.46 19.6773C18.067 19.3304 18.2782 18.5535 17.9277 17.94V17.939C17.4079 17.0401 17.2813 16.0803 17.7285 15.3042C18.1763 14.5271 19.0722 14.1548 20.1104 14.1548C20.8127 14.1546 21.3845 13.5771 21.3848 12.8804V11.1197ZM14.375 11.9996C14.3748 10.6881 13.3115 9.62456 12 9.62456C10.6885 9.62456 9.62523 10.6881 9.625 11.9996C9.625 13.3112 10.6883 14.3746 12 14.3746C13.3117 14.3746 14.375 13.3112 14.375 11.9996ZM15.625 11.9996C15.625 14.0016 14.002 15.6246 12 15.6246C9.99797 15.6246 8.375 14.0016 8.375 11.9996C8.37523 9.99772 9.99811 8.37456 12 8.37456C14.0019 8.37456 15.6248 9.99772 15.625 11.9996ZM22.6348 12.8804C22.6345 14.2631 21.5074 15.4046 20.1104 15.4048C19.3385 15.4048 18.9587 15.6729 18.8115 15.9283C18.6828 16.1516 18.6348 16.534 18.8848 17.0748L19.0107 17.3169L19.0127 17.3199C19.7021 18.5263 19.2929 20.0691 18.0801 20.7623L16.3506 21.7525L16.3496 21.7515C15.3211 22.3569 14.0339 22.0465 13.3516 21.1226L13.2188 20.9234L13.1094 20.733L13.1074 20.731C12.7241 20.0623 12.3037 19.8677 12.0088 19.8677C11.713 19.8677 11.2897 20.0633 10.9014 20.733L10.791 20.9234L10.6582 21.1226C9.97562 22.0467 8.68778 22.3576 7.65918 21.7515V21.7525L5.92969 20.7623C4.71776 20.0695 4.30667 18.5152 4.99902 17.3169L5.125 17.0748C5.37502 16.5339 5.32696 16.1516 5.19824 15.9283C5.05105 15.673 4.67185 15.4049 3.90039 15.4048C2.50322 15.4048 1.37524 14.2633 1.375 12.8804V11.1197C1.37517 9.73678 2.50318 8.59526 3.90039 8.59526C4.67175 8.59517 5.05101 8.3271 5.19824 8.07182C5.34535 7.81654 5.3873 7.35304 4.99902 6.68315V6.68218C4.30683 5.4838 4.71759 3.92949 5.92969 3.23686L7.65918 2.24761C8.68751 1.64191 9.9756 1.95296 10.6582 2.87651L10.7871 3.07085L10.791 3.07671L10.9014 3.26714L10.9023 3.26909C11.2856 3.9376 11.7061 4.13225 12.001 4.13237C12.2598 4.13237 12.6166 3.98268 12.9619 3.49663L13.1094 3.26616L13.2188 3.07671L13.2227 3.07085C13.8602 1.99923 15.2533 1.60145 16.3506 2.24761L18.0791 3.23686H18.0801C19.2922 3.92951 19.703 5.48379 19.0107 6.68218V6.68315C18.6225 7.35304 18.6644 7.81654 18.8115 8.07182C18.9587 8.32717 19.3386 8.59526 20.1104 8.59526C21.4931 8.59545 22.6346 9.72262 22.6348 11.1197V12.8804Z"
+                                    fill="#0F032D" />
+                            </svg>
+                        </div>
+                        <div class="box-btn box-btn-remote" id="changeInput">
+                            Переключить управление
+                        </div>
+                    </div>
                     <div class="body-mouse">
                         <div class="touchpad-buttons">
                             <div class="button-mouse mouse-left" data-action-mouse="clickLeft" id="left-click">
@@ -336,33 +735,77 @@
                         <div class="box-touchpad">
                             <div class="mouse-touch" id="touchpad">
                                 <div class="icon-touchpad">
-                                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                         xmlns="http://www.w3.org/2000/svg">
-                                        <g clip-path="url(#clip0_5_1931)">
-                                            <path
-                                                d="M13.8333 5.99999C13.8333 5.69057 13.7109 5.39326 13.4921 5.17447C13.2734 4.95568 12.976 4.83332 12.6666 4.83332C12.3572 4.83332 12.0599 4.95568 11.8411 5.17447C11.6223 5.39326 11.5 5.69057 11.5 5.99999V17.3333C11.5 17.74 11.2082 18.0764 10.8229 18.1497C10.8061 18.153 10.789 18.1527 10.7721 18.1549C10.7373 18.1594 10.7026 18.1667 10.6666 18.1667L10.6653 18.1654C10.6103 18.1654 10.5554 18.1605 10.5013 18.1497C10.4852 18.1465 10.4701 18.1396 10.4544 18.1354C10.316 18.0993 10.184 18.0315 10.0755 17.9232L8.11584 15.9635L8.01428 15.8698C7.76903 15.6624 7.4678 15.5303 7.14709 15.4909C6.78069 15.4459 6.40895 15.5249 6.0924 15.7148C5.83197 15.8711 5.64288 16.1231 5.56506 16.4167C5.48728 16.7103 5.52679 17.023 5.67574 17.2878C8.18808 21.7535 9.62894 24.2655 10.0273 24.8776H10.0286L10.2903 25.2773H10.289C10.9417 26.2677 11.8308 27.0807 12.875 27.6432C13.9197 28.2059 15.088 28.5002 16.2747 28.5H18.664C20.5647 28.5 22.3877 27.745 23.7317 26.401C25.0757 25.057 25.8307 23.234 25.8307 21.3333V15.3333C25.8307 15.0239 25.7083 14.7266 25.4895 14.5078C25.2708 14.2891 24.9734 14.1667 24.664 14.1667C24.3549 14.1667 24.0585 14.2894 23.8398 14.5078C23.6321 14.7155 23.5117 14.9941 23.5 15.2864V16C23.5 16.4602 23.1269 16.8333 22.6666 16.8333C22.2064 16.8333 21.8333 16.4602 21.8333 16V15.3581C21.833 15.3498 21.8307 15.3416 21.8307 15.3333C21.8307 15.3159 21.833 15.2986 21.8333 15.2812V14C21.8333 13.6906 21.7109 13.3933 21.4921 13.1745C21.2734 12.9557 20.976 12.8333 20.6666 12.8333C20.3572 12.8333 20.0599 12.9557 19.8411 13.1745C19.6223 13.3933 19.5 13.6906 19.5 14V16C19.5 16.4602 19.1269 16.8333 18.6666 16.8333C18.2064 16.8333 17.8333 16.4602 17.8333 16V12.6667C17.8333 12.3572 17.7109 12.0599 17.4921 11.8411C17.2734 11.6223 16.976 11.5 16.6666 11.5C16.3572 11.5 16.0599 11.6223 15.8411 11.8411C15.6223 12.0599 15.5 12.3572 15.5 12.6667V16C15.5 16.4602 15.1269 16.8333 14.6666 16.8333C14.2064 16.8333 13.8333 16.4602 13.8333 16V5.99999ZM6.32548 4.79556C6.74564 4.60792 7.23799 4.79606 7.42574 5.21614C7.61339 5.63632 7.42528 6.12867 7.00516 6.3164C5.90153 6.80927 4.85331 7.41818 3.87756 8.1315C3.50602 8.40312 2.98381 8.32205 2.71219 7.95051C2.44085 7.57915 2.52213 7.05813 2.89318 6.78645C3.96375 6.00379 5.1146 5.33635 6.32548 4.79556ZM18.8828 3.80598C20.7248 4.30002 22.4527 5.06436 24.0247 6.05468C24.4139 6.30007 24.5304 6.81511 24.2851 7.20442C24.0398 7.59372 23.5247 7.71013 23.1354 7.46483C21.7022 6.56199 20.1282 5.86528 18.4505 5.41535C18.0061 5.29601 17.7427 4.83894 17.8619 4.39452C17.9813 3.95018 18.4383 3.68679 18.8828 3.80598ZM15.5 10.0872C15.8634 9.92284 16.26 9.83332 16.6666 9.83332C17.4181 9.83332 18.1392 10.1314 18.6705 10.6628C18.925 10.9172 19.1238 11.2164 19.2643 11.5404C19.6881 11.2987 20.1702 11.1667 20.6666 11.1667C21.4181 11.1667 22.1392 11.4647 22.6705 11.9961C22.9246 12.2502 23.1226 12.5491 23.263 12.8724C23.6865 12.6313 24.1682 12.5 24.664 12.5C25.4154 12.5 26.1366 12.7981 26.6679 13.3294C27.1993 13.8608 27.4974 14.5819 27.4974 15.3333V21.3333C27.4974 23.6761 26.5667 25.9228 24.9101 27.5794C23.2536 29.2359 21.0067 30.1667 18.664 30.1667H15.9974C15.9551 30.1666 15.9142 30.1597 15.8737 30.1536C14.5499 30.0936 13.2543 29.7407 12.0846 29.1107C10.7967 28.4169 9.70038 27.4132 8.89579 26.1914L8.89449 26.1888L8.63277 25.7891V25.7878C8.19756 25.1195 6.71982 22.5407 4.22391 18.1042C3.86215 17.4611 3.76535 16.7028 3.95438 15.9896C4.14345 15.2763 4.60278 14.6646 5.23563 14.2851L5.47912 14.1536C6.05706 13.8694 6.70702 13.7582 7.35022 13.8372C7.99348 13.9163 8.5978 14.1806 9.0898 14.5963L9.29292 14.7838L9.83329 15.3229V5.99999C9.83329 5.24854 10.1314 4.52744 10.6627 3.99608C11.1941 3.46473 11.9152 3.16666 12.6666 3.16666C13.4181 3.16666 14.1392 3.46473 14.6705 3.99608C15.2019 4.52744 15.5 5.24854 15.5 5.99999V10.0872Z"
-                                                fill="white" />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_5_1931">
-                                                <rect width="32" height="32" fill="white" />
-                                            </clipPath>
-                                        </defs>
+                                        <path
+                                            d="M12.4824 15.1826C11.9804 13.5371 13.5015 11.9709 15.1641 12.4932H15.165L21.125 14.3428L21.127 14.3438C23.1082 14.9664 23.1288 17.77 21.1592 18.4316L19.5303 18.9824L19.5273 18.9834C19.2592 19.0729 19.0504 19.2787 18.9639 19.5439L18.9619 19.5498L18.4121 21.1768C17.7687 23.107 15.1245 23.1197 14.3975 21.3164L14.333 21.1357L12.4834 15.1855L12.4824 15.1826ZM14.792 13.6855C14.1172 13.4721 13.4621 14.1027 13.6768 14.8145L15.5264 20.7637C15.7878 21.6014 16.9517 21.6097 17.2275 20.7822V20.7803L17.7773 19.1504C17.9919 18.4986 18.503 18.0068 19.1328 17.7969L20.7598 17.248L20.7607 17.2471C21.5899 16.9687 21.5711 15.7959 20.7549 15.5371L14.7949 13.6865L14.792 13.6855ZM21.375 12C21.375 6.82518 17.1748 2.625 12 2.625C6.82518 2.625 2.625 6.82518 2.625 12C2.625 17.1748 6.82518 21.375 12 21.375C12.3452 21.375 12.625 21.6548 12.625 22C12.625 22.3452 12.3452 22.625 12 22.625C6.13482 22.625 1.375 17.8652 1.375 12C1.375 6.13482 6.13482 1.375 12 1.375C17.8652 1.375 22.625 6.13482 22.625 12C22.625 12.3452 22.3452 12.625 22 12.625C21.6548 12.625 21.375 12.3452 21.375 12Z"
+                                            fill="white" />
                                     </svg>
+
                                 </div>
                                 <canvas id="stream-canvas"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="" id="box-quick-buttons"></div>
-                </div>
-                <div class="keyboard" id="keyboard">
-                    <div class="box-button-quick">
-                        <input class="checkbox-btn" type="checkbox" name="choiceButton" id="choiceButton">
-                        <label class="checkbox-label" for="choiceButton">Выбрать кнопки</label>
+                    <div id="visible-hotkeys">
+                        <div class="input-wrapper" data-action-keyboard="text" style="margin-bottom: 20px;">
+                            <input class="input-string" autocapitalize="none" type="text" name="hidden-input"
+                                data-input="text">
+                            <label for="hidden-input" class="input-label">Активировать ввод</label>
+                        </div>
+                        <div class="d-none container-hotkeys" id="container-quick-btn">
+                            <div class="container-lock">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 17.35C12.9002 17.35 13.63 16.6202 13.63 15.72C13.63 14.8198 12.9002 14.09 12 14.09C11.0998 14.09 10.37 14.8198 10.37 15.72C10.37 16.6202 11.0998 17.35 12 17.35Z"
+                                        fill="url(#paint0_linear_38_174_v2)" />
+                                    <path
+                                        d="M18.28 9.53V8.28C18.28 5.58 17.63 2 12 2C6.37 2 5.72 5.58 5.72 8.28V9.53C2.92 9.88 2 11.3 2 14.79V16.65C2 20.75 3.25 22 7.35 22H16.65C20.75 22 22 20.75 22 16.65V14.79C22 11.3 21.08 9.88 18.28 9.53ZM12 18.74C10.33 18.74 8.98 17.38 8.98 15.72C8.98 14.05 10.34 12.7 12 12.7C13.66 12.7 15.02 14.06 15.02 15.72C15.02 17.39 13.67 18.74 12 18.74ZM7.35 9.44C7.27 9.44 7.2 9.44 7.12 9.44V8.28C7.12 5.35 7.95 3.4 12 3.4C16.05 3.4 16.88 5.35 16.88 8.28V9.45C16.8 9.45 16.73 9.45 16.65 9.45H7.35V9.44Z"
+                                        fill="url(#paint1_linear_38_174_v2)" />
+                                    <defs>
+                                        <linearGradient id="paint0_linear_38_174_v2" x1="2" y1="2" x2="22" y2="22"
+                                            gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#00FFFF" />
+                                            <stop offset="1" stop-color="#0000FF" />
+                                        </linearGradient>
+                                        <linearGradient id="paint1_linear_38_174_v2" x1="2" y1="2" x2="22" y2="22"
+                                            gradientUnits="userSpaceOnUse">
+                                            <stop stop-color="#00FFFF" />
+                                            <stop offset="1" stop-color="#0000FF" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                            </div>
+
+                            <div class="box-hotkeys" id="box-quick-buttons">
+
+
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="group-button">
-                        <div class="button" data-weight="1" data-action-media="volumeDown">
+                </div>
+
+                <div class="keyboard" id="keyboard">
+                    <div class="box-title-setting">
+                        <h3>Выбор кнопок</h3>
+                        <div class="box-arrow" id="backToMainFromButtons">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M10.0117 5.48762C9.76767 5.24392 9.37191 5.24381 9.12793 5.48762L3.05762 11.5579C2.9405 11.6751 2.875 11.8346 2.875 12.0003C2.87508 12.1658 2.94069 12.3246 3.05762 12.4417L9.12793 18.512C9.37195 18.7561 9.76763 18.756 10.0117 18.512C10.2558 18.268 10.2558 17.8723 10.0117 17.6282L5.00977 12.6253H20.5C20.8451 12.6253 21.1248 12.3453 21.125 12.0003C21.125 11.6551 20.8452 11.3753 20.5 11.3753H5.00879L10.0117 6.37238C10.2558 6.1283 10.2558 5.73169 10.0117 5.48762Z"
+                                    fill="white" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="box-button-quick" style="margin-bottom: 40px;">
+                        <input class="checkbox-btn" type="checkbox" name="choiceButton" id="choiceButton">
+                        <label class="checkbox-label checkbox-labek_height" id="choiceButtonLabel"
+                            for="choiceButton">Выбрать кнопки</label>
+                    </div>
+                    <div class="group-button" style="margin-bottom: 48px;">
+                        <div class="button" data-weight="1" data-action-button="volumeDown">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_5_1952)">
@@ -377,7 +820,7 @@
                                 </defs>
                             </svg>
                         </div>
-                        <div class="button" data-weight="1" data-action-media="volumeUp">
+                        <div class="button" data-weight="1" data-action-button="volumeUp">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_5_1943)">
@@ -392,7 +835,7 @@
                                 </defs>
                             </svg>
                         </div>
-                        <div class="button" data-weight="1" data-action-media="prevMedia">
+                        <div class="button" data-weight="1" data-action-button="prevMedia">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_5_1968)">
@@ -407,7 +850,7 @@
                                 </defs>
                             </svg>
                         </div>
-                        <div class="button" data-weight="1" data-action-media="playPause">
+                        <div class="button" data-weight="1" data-action-button="playPause">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_5_1975)">
@@ -422,7 +865,7 @@
                                 </defs>
                             </svg>
                         </div>
-                        <div class="button" data-weight="1" data-action-media="nextMedia">
+                        <div class="button" data-weight="1" data-action-button="nextMedia">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_5_1982)">
@@ -439,13 +882,54 @@
                         </div>
                     </div>
                     <div class="keyboard-input">
-                        <div class="input-wrapper" data-weight="5" data-action-keyboard="text">
+                        <div class="input-wrapper input-wrapper_m" data-action-keyboard="text">
                             <input class="input-string" autocapitalize="none" type="text" name="hidden-input"
                                 data-input="text">
                             <label for="hidden-input" class="input-label">Активировать ввод</label>
                         </div>
-                        <div class="group-button">
+                        <div class="group-button group-button__center" style="margin-bottom: 32px;">
+                            <div>
+                                <div class="button" data-weight="1" data-action-button="arrowLeft">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M17.3747 9.32955C17.3746 7.80429 16.8402 6.8933 16.153 6.49459C15.4648 6.09547 14.4073 6.0845 13.0886 6.83346L8.47333 9.51022V9.51119C7.15407 10.2742 6.63259 11.1925 6.63251 11.9848C6.63251 12.7277 7.09065 13.5813 8.23505 14.3139L8.47333 14.4594L13.0934 17.1391H13.0925C14.4112 17.9019 15.4677 17.8937 16.154 17.4975C16.8403 17.1012 17.3746 16.1908 17.3747 14.6704V9.32955ZM18.6247 14.6704C18.6246 16.4595 17.985 17.8844 16.779 18.5805C15.5729 19.2768 14.0186 19.1182 12.4675 18.2212L12.4665 18.2202L7.84735 15.5405V15.5415C6.29671 14.6446 5.38251 13.3774 5.38251 11.9848C5.38259 10.5925 6.29617 9.32599 7.84637 8.42916L12.4665 5.74947L12.4714 5.74655L12.7624 5.5903C14.2156 4.85035 15.651 4.75882 16.78 5.41354C17.9847 6.11238 18.6246 7.53569 18.6247 9.32955V14.6704Z"
+                                            fill="white" />
+                                    </svg>
 
+                                </div>
+                            </div>
+                            <div class="group-button__arows">
+                                <div class="button" data-weight="1" data-action-button="arrowUp">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M12.015 5.38251C13.4072 5.38251 14.6728 6.29642 15.5696 7.84637H15.5706L18.2503 12.4665L18.2513 12.4675C19.1483 14.0186 19.3059 15.5729 18.6097 16.779C17.9134 17.9848 16.4886 18.6247 14.6995 18.6247H9.33038C7.54128 18.6247 6.11651 17.9848 5.42022 16.779C4.72396 15.5729 4.88158 14.0186 5.77862 12.4675L5.7796 12.4665L8.45929 7.84637C9.35614 6.29615 10.6225 5.38252 12.015 5.38251ZM12.015 6.63251C11.2226 6.63252 10.3044 7.15398 9.54132 8.47333H9.54034L6.86065 13.0934L6.85968 13.0925C6.09707 14.4111 6.10611 15.4678 6.50226 16.154C6.89855 16.8404 7.80967 17.3747 9.33038 17.3747H14.6995C16.2202 17.3747 17.1313 16.8404 17.5276 16.154C17.9238 15.4677 17.932 14.4112 17.1692 13.0925V13.0934L14.4896 8.47333H14.4886C13.7255 7.15397 12.8073 6.63251 12.015 6.63251Z"
+                                            fill="white" />
+                                    </svg>
+
+                                </div>
+                                <div class="button" data-weight="1" data-action-button="arrowDown">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M14.6704 5.375C16.4595 5.37509 17.8844 6.01572 18.5805 7.22168C19.2765 8.42783 19.1183 9.98213 18.2212 11.5332H18.2202L15.5405 16.1523C14.6436 17.703 13.3774 18.6172 11.9848 18.6172C10.6793 18.6171 9.48424 17.8145 8.60104 16.4365L8.42916 16.1533L5.74947 11.5332L5.74654 11.5283C4.86563 9.97712 4.7152 8.42392 5.41354 7.21973C6.11243 6.01512 7.5358 5.37511 9.32955 5.375H14.6704ZM9.32955 6.625C7.80407 6.62511 6.89321 7.16029 6.49459 7.84766C6.09609 8.53501 6.08458 9.59005 6.83053 10.9062L9.51021 15.5264L9.51119 15.5273C10.2742 16.8464 11.1925 17.3671 11.9848 17.3672C12.7772 17.3672 13.6963 16.8457 14.4594 15.5264L17.1391 10.9062C17.9013 9.58808 17.8934 8.53285 17.4975 7.84668C17.1013 7.16027 16.1909 6.62508 14.6704 6.625H9.32955Z"
+                                            fill="white" />
+                                    </svg>
+
+
+                                </div>
+                            </div>
+                            <div class="">
+                                <div class="button" data-weight="1" data-action-button="arrowRight">
+                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                        xmlns="http://www.w3.org/2000/svg">
+                                        <path
+                                            d="M7.22168 5.42024C8.35251 4.76753 9.78886 4.86533 11.2422 5.61946L11.5332 5.77864V5.77961L16.1533 8.4593L16.4365 8.63118C17.8145 9.51441 18.6172 10.7094 18.6172 12.015C18.6172 13.3205 17.8145 14.5155 16.4365 15.3988L16.1533 15.5706L11.5332 18.2503L11.5283 18.2532C9.97709 19.1342 8.42394 19.2856 7.21973 18.5872C6.01486 17.8884 5.37506 16.4643 5.375 14.6702V9.33039C5.375 7.54114 6.01564 6.11646 7.22168 5.42024ZM6.625 14.6702C6.62506 16.1958 7.16025 17.1066 7.84766 17.5052C8.53589 17.9043 9.59252 17.9152 10.9111 17.1663L15.5264 14.4896L15.5273 14.4886C16.8464 13.7255 17.3672 12.8073 17.3672 12.015C17.3672 11.2227 16.8464 10.3044 15.5273 9.54133L15.5264 9.54035L10.9062 6.86067V6.85969C9.58839 6.09781 8.53276 6.10648 7.84668 6.50227C7.16022 6.89855 6.625 7.80965 6.625 9.33039V14.6702Z"
+                                            fill="white" />
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                         <div class="group-button group-button__center">
                             <div class="button button-command" data-weight="1" data-action-command="changeLayout">
@@ -514,6 +998,7 @@
 
             let clickCount = 0;
             let clickTimer;
+            let limitQuickButton = 5;
             let isMoving = false;
 
             let activePointers = new Map();
@@ -521,6 +1006,89 @@
             let isSelectionMode = false;
 
             const boxController = document.getElementById("box-controller");
+
+            const sliders = document.querySelectorAll('.range');
+
+            function handleSliderProgress(slider) {
+                const min = parseFloat(slider.min) || 0;
+                const max = parseFloat(slider.max) || 100;
+                const value = parseFloat(slider.value);
+
+                const percentage = ((value - min) / (max - min)) * 100;
+
+                slider.style.setProperty('--progress', `${percentage}%`);
+            }
+
+
+            function setSettingsLocalStorage() {
+                isStreamTemporaryActive = JSON.parse(localStorage.getItem("activationStream")) || false;
+                isInfinityStreamActive = JSON.parse(localStorage.getItem("infinityStream")) || false;
+
+                if (isStreamTemporaryActive) {
+                    document.getElementById("activationStream").checked = true;
+                    let infinityStream = document.getElementById("activationInfinityStream");
+                    infinityStream.disabled = false;
+                    if (isInfinityStreamActive) {
+                        infinityStream.checked = true;
+                    }
+                }
+
+                if (JSON.parse(localStorage.getItem("square"))) {
+                    document.getElementById("activationSquare").checked = true;
+
+                    let bodyMouse = document.getElementsByClassName("body-mouse")[0];
+
+                    bodyMouse.classList.toggle("body-mouse--square");
+                    touchpad.classList.toggle("mouse-touch--square");
+                }
+                if (JSON.parse(localStorage.getItem("fixedQuick"))) {
+                    document.getElementById("fixedQuick").checked = true;
+                    let containerHotkeys = document.getElementById("container-hotkeys");
+                    containerHotkeys.classList.remove("notvisible-transform-hotkeys");
+                }
+
+                document.getElementById("rangeZoom").value = localStorage.getItem("zoom") || 2;
+                document.getElementById("rangeZoomOutput").textContent = localStorage.getItem("zoom") || 2;
+
+                document.getElementById("rangeSensitivity").value = localStorage.getItem("sensitivity") || 2.5;
+                document.getElementById("rangeSensitivityOutput").textContent = localStorage.getItem("sensitivity") || 2.5;
+
+                document.getElementById("rangeScroll").value = localStorage.getItem("scroll") || 0.1
+                document.getElementById("rangeScrollOutput").textContent = localStorage.getItem("scroll") || 0.1
+
+                sliders.forEach(slider => {
+                    slider.addEventListener('input', () => handleSliderProgress(slider));
+
+                    handleSliderProgress(slider);
+                });
+
+
+
+                socket.send(JSON.stringify({
+                    input: "settings",
+                    mouse: [
+                        {
+                            type: "settings",
+                            setting: "sensitivity",
+                            value: localStorage.getItem("sensitivity") || 2.5
+                        },
+                        {
+                            type: "settings",
+                            setting: "scroll",
+                            value: localStorage.getItem("scroll") ?? 0.1
+                        },
+                    ],
+                    stream: JSON.parse(localStorage.getItem("activationStream")) || false,
+                    settingStream: {
+                        "canvas_width": canvas.width,
+                        "canvas_height": canvas.height,
+                        "zoom": localStorage.getItem("zoom") || 2,
+                    }
+                }))
+
+                sendStreamState(isInfinityStreamActive);
+            }
+
 
             function connect() {
                 console.log("Connection attempt")
@@ -531,6 +1099,9 @@
 
                     if (typeof resizeCanvas === "function") {
                         resizeCanvas();
+                    }
+                    if (typeof setSettingsLocalStorage === "function") {
+                        setSettingsLocalStorage();
                     }
                 }
 
@@ -556,7 +1127,6 @@
                 e.preventDefault();
                 let iconTouchpad = document.getElementsByClassName("icon-touchpad");
                 iconTouchpad[0].style.display = "none"
-                touchpad.style.background = "#D9D9D916";
                 /*
                 Переменная для отслеживания колиечества кликов.
                 Там дальше идёт таймер, чтобы в это время отследить,
@@ -593,7 +1163,6 @@
             // Отслеживание поднятия пальца и очищение всех переменных
             touchpad.addEventListener('pointerup', (e) => {
                 let iconTouchpad = document.getElementsByClassName("icon-touchpad");
-                touchpad.style.background = "#FFFFFF08";
                 iconTouchpad[0].style.display = "flex"
 
                 sendStreamState(false);
@@ -642,24 +1211,49 @@
 
             // Добавление кнопок быстрого доступа, сохранённый в localstorage
             function addQuickButtons() {
-                const containerQuickButtons = document.getElementById("box-quick-buttons");
-                containerQuickButtons.innerHTML = "";
 
+                // const containerQuickButtons = document.getElementById("box-quick-buttons");
+                const containersQuickButtons = document.querySelectorAll('.box-hotkeys');
                 let quickButtons = JSON.parse(localStorage.getItem("quickButtons")) || [];
-                quickButtons.sort((a, b) => b.weight - a.weight)
+                quickButtons.sort((a, b) => b.weight - a.weight);
+                limitQuickButton = limitQuickButton - quickButtons.length >= 0 ? limitQuickButton - quickButtons.length : 0;
 
-                quickButtons.forEach((elem) => {
-                    let elementForCopy = document.querySelector(`[data-action-${elem.type}="${elem.action}"]`)
-                    let elementCopy = elementForCopy.cloneNode(true);
-                    elementCopy.removeAttribute("data-weight");
-                    elementCopy.style.marginBottom = "0";
-                    elementCopy.style.marginRight = "0";
-                    elementCopy.classList.add(`weight-${elem.weight}`);
-                    containerQuickButtons.appendChild(elementCopy);
+                containersQuickButtons.forEach((containerQuickButtons) => {
+                    containerQuickButtons.innerHTML = "";
+                    console.log("banana")
+
+                    console.log(quickButtons.length);
+                    if (quickButtons.length > 0) {
+                        document.getElementById("container-quick-btn").classList.remove("d-none");
+                    }
+
+                    quickButtons.forEach((elem) => {
+                        let elementForCopy = document.querySelector(`[data-action-${elem.type}="${elem.action}"]`)
+                        let elementCopy = elementForCopy.cloneNode(true);
+                        elementCopy.removeAttribute("data-weight");
+                        elementCopy.style.marginBottom = "0";
+                        elementCopy.style.marginRight = "0";
+                        elementCopy.classList.add(`weight-${elem.weight}`);
+                        containerQuickButtons.appendChild(elementCopy);
+                    })
                 })
+
             }
 
             addQuickButtons();
+
+            // Перемещние мыши при открытии  быстрых клавиш сверху
+            function changeTransfromHotkeys() {
+                let containerHotkyes = document.getElementById("container-hotkeys");
+                containerHotkyes.classList.toggle("change-transform-hotkeys");
+
+                let mainHotkeys = document.getElementById("visible-hotkeys");
+                mainHotkeys.classList.toggle("d-none");
+
+                let bodyMouse = document.querySelector(".body-mouse");
+                bodyMouse.classList.toggle("change-transform-bodymouse")
+
+            }
 
             // Начало инициализации всех кнопок
             document.addEventListener('click', (event) => {
@@ -667,6 +1261,7 @@
                 if (event.target.closest('#touchpad')) {
                     return;
                 }
+
                 // Здесь добавление кнопок в быстрый доступ
                 if (isSelectionMode) {
                     let btnChoice = event.target.closest("[data-weight]");
@@ -693,15 +1288,51 @@
 
                             btnChoice.classList.add("not-selected");
                             btnChoice.classList.remove('selected');
-                        } else {
-                            addElementToListLocalStorage({ type: actionType, action: actionValue, weight: btnChoice.dataset.weight })
 
-                            btnChoice.classList.remove("not-selected");
-                            btnChoice.classList.add('selected');
+
+                        } else {
+                            if (limitQuickButton > 0) {
+                                addElementToListLocalStorage({ type: actionType, action: actionValue, weight: btnChoice.dataset.weight })
+
+                                btnChoice.classList.remove("not-selected");
+                                btnChoice.classList.add('selected');
+                            }
                         }
                     }
                     return;
                 }
+
+                let btnOpenHotkeys = event.target.closest("#openHotkeys");
+                if (btnOpenHotkeys) {
+                    changeTransfromHotkeys()
+                }
+
+                let btnChangeInput = event.target.closest("#changeInput");
+                if (btnChangeInput) {
+                    boxController.style.transform = "translateX(-100%)";
+                    return;
+                }
+
+                let btnChangeSettings = event.target.closest("#changeSettings");
+                if (btnChangeSettings) {
+                    boxController.style.transform = "translateX(0%)";
+                    return;
+                }
+
+
+                let backToMainFromSettings = event.target.closest("#backToMainFromSettings");
+                if (backToMainFromSettings) {
+                    boxController.style.transform = "translateX(-50%)";
+                    return
+                }
+
+                let backToMainFromButtons = event.target.closest("#backToMainFromButtons");
+                if (backToMainFromButtons) {
+                    boxController.style.transform = "translateX(-50%)";
+                    return;
+                }
+
+
                 // Обработка клавиш мыши
                 let btnMouse = event.target.closest("[data-action-mouse]");
                 if (btnMouse) {
@@ -712,12 +1343,12 @@
                     return;
                 }
                 // Обработка клавиш мультимедиа
-                let btnMedia = event.target.closest("[data-action-media]");
-                if (btnMedia) {
+                let btnButton = event.target.closest("[data-action-button]");
+                if (btnButton) {
                     socket.send(JSON.stringify({
                         input: "keyboard",
                         type: 'key',
-                        value: btnMedia.dataset.actionMedia
+                        value: btnButton.dataset.actionButton
                     }));
                     return;
                 }
@@ -806,41 +1437,60 @@
                 });
             });
 
-
-            // const changeInput = document.getElementById("changeInput");
-            // // Здесь событие для открытия меню клавиш
-            // changeInput.addEventListener("change", function () {
-            //     let boxController = document.getElementById("box-controller");
-            //     if (this.checked) {
-            //         boxController.style.transform = "translateX(-50%)";
-            //     } else {
-            //         boxController.style.transform = "translateX(-00%)";
-            //     }
-            // })
-
-
             /*
             Функцит для добавления, удаления и проверки элементов
             в localstorage.
             */
             function addElementToListLocalStorage(newItem) {
+
                 const currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
 
                 currentList.push(newItem);
-
+                --limitQuickButton;
                 localStorage.setItem("quickButtons", JSON.stringify(currentList));
+                if (limitQuickButton === 0) {
+                    deleteStyleElem();
+                }
+
+
             }
 
             function deleteElementToListLocalStorage(oldCommand) {
                 let currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
                 currentList = currentList.filter(item => !(item.action === oldCommand))
-
+                if (currentList.length === 0) {
+                    console.log(currentList.length)
+                    document.getElementById("container-quick-btn").classList.add("d-none");
+                }
+                ++limitQuickButton;
+                addStyleElem();
                 localStorage.setItem("quickButtons", JSON.stringify(currentList))
             }
 
             function checkElementToListLocalStorage(command) {
                 const currentList = JSON.parse(localStorage.getItem("quickButtons")) || [];
                 return currentList.some(item => item.action === command);
+            }
+
+            function deleteStyleElem() {
+                let elementsChoice = document.querySelectorAll("[data-weight]");
+                elementsChoice.forEach((elem) => {
+                    if (elem.classList.contains("not-selected")) {
+                        elem.classList.remove("not-selected")
+                    }
+                })
+            }
+
+            function addStyleElem() {
+                if (limitQuickButton > 0) {
+                    let elementsChoice = document.querySelectorAll("[data-weight]");
+                    elementsChoice.forEach((elem) => {
+                        if (!elem.classList.contains("selected")) {
+                            elem.classList.add("not-selected")
+                        }
+                    })
+                }
+
             }
 
             // Приём видео с сервера
@@ -850,48 +1500,39 @@
 
             let isStreamingActive = false;
 
-
-            let zoom = 2;
-
             socket.binaryType = "blob";
 
             function resizeCanvas() {
-                // Получаем фактические размеры div с учетом паддингов
                 canvas.width = touchpad.clientWidth;
                 canvas.height = touchpad.clientHeight;
 
                 socket.send(JSON.stringify({
                     "canvas_width": canvas.width,
                     "canvas_height": canvas.height,
-                    "zoom": 2
+                    "zoom": document.getElementById("rangeZoom").value
                 }));
             }
-            // (Опционально) Добавляем отслеживание изменения размеров окна 
+            // Добавление отслеживания изменения размеров окна 
             window.addEventListener('resize', resizeCanvas);
 
-            // 1. Отрисовка кадра на Canvas, когда картинка загрузилась в память
             img.onload = function () {
                 if (!isStreamingActive) return;
 
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0);
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // Критически важно для мобильных браузеров: очищаем ссылку, 
-                // чтобы не забить оперативную память смартфона (Memory Leak)
                 URL.revokeObjectURL(img.src);
             };
 
-            // 2. Главный обработчик входящих сообщений
+            // Главный обработчик входящих сообщений
             socket.onmessage = function (event) {
-                // ПРОВЕРКА: Если пришли бинарные данные — это наш кадр WebP
                 if (event.data instanceof Blob) {
-                    // Создаем временную внутреннюю URL-ссылку на бинарный Blob
+
                     if (!isStreamingActive) {
                         URL.revokeObjectURL(URL.createObjectURL(event.data))
                     }
                     img.src = URL.createObjectURL(event.data);
                 }
-                // Если пришел текст — обрабатываем его как обычную команду (если нужно)
                 else {
                     try {
                         const textData = JSON.parse(event.data);
@@ -901,8 +1542,6 @@
                     }
                 }
             };
-
-
 
             function sendStreamState(isEnabled) {
                 if (!isStreamTemporaryActive) {
@@ -914,7 +1553,6 @@
                 }
 
                 isStreamingActive = isEnabled;
-
 
                 if (socket && socket.readyState === WebSocket.OPEN) {
                     socket.send(JSON.stringify({ "stream": isEnabled }));
@@ -929,89 +1567,27 @@
 
             let isStreamTemporaryActive = document.getElementById("activationStream").checked;
 
-            // activationStream.addEventListener("change", (e) => {
-            //     const isChecked = e.target.checked;
-            //     isStreamTemporaryActive = isChecked;
-            //     if (!isChecked) {
-            //         socket.send(JSON.stringify({ "stream": false }));
-
-            //         isStreamingActive = false;
-
-            //         activationInfinityStream.checked = false;
-
-            //         const ctx = canvas.getContext('2d');
-            //         ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-
-            //     }
-            //     activationInfinityStream.disabled = !isChecked;
-            // })
-
-            // const activationInfinityStream = document.getElementById("activationInfinityStream")
             let isInfinityStreamActive = document.getElementById("activationInfinityStream").checked;
-            // activationInfinityStream.addEventListener("change", (e) => {
-            //     const isChecked = e.target.checked;
-            //     isInfinityStreamActive = isChecked;
-            //     sendStreamState(isChecked);
-            // })
-
-            // const activationSquare = document.getElementById("activationSquare");
-
-            // activationSquare.addEventListener("change", (e) => {
-            //     const isChecked = e.target.checked
-            //     let bodyMouse = document.getElementsByClassName("body-mouse")[0]
-
-            //     bodyMouse.classList.toggle("body-mouse--square");
-            //     touchpad.classList.toggle("mouse-touch--square")
-            // })
-
-            // const rangeZoom = document.getElementById("rangeZoom");
-
-            // rangeZoom.addEventListener("change", (e) => {
-            //     socket.send(JSON.stringify({
-            //         "canvas_width": canvas.width,
-            //         "canvas_height": canvas.height,
-            //         "zoom": e.target.value
-            //     }));
-            // })
 
             document.addEventListener("change", (event) => {
-                let btnChangeInput = event.target.closest("#changeInput");
-                if (btnChangeInput) {
-                    if (btnChangeInput.checked) {
-                        boxController.style.transform = "translateX(-100%)";
-                    } else {
-                        boxController.style.transform = "translateX(-50%)";
-                    }
-                    return;
-                }
-
-                let btnChangeSettings = event.target.closest("#changeSettings");
-
-                if (btnChangeSettings) {
-                    if (btnChangeSettings.checked) {
-                        boxController.style.transform = "translateX(0%)";
-                    } else {
-                        boxController.style.transform = "translateX(-50%)";
-                    }
-                    return;
-                }
-
                 let btnChoice = event.target.closest("#choiceButton");
-
+                let btnChoicelable = document.getElementById("choiceButtonLabel");
                 if (btnChoice) {
                     let elementsChoice = document.querySelectorAll("[data-weight]");
                     isSelectionMode = event.target.checked;
                     if (isSelectionMode) {
+                        btnChoicelable.textContent = "Сохранить выбор"
                         elementsChoice.forEach((elem) => {
-                            let command = elem.dataset.actionMedia || elem.dataset.actionCommand || "text";
+                            let command = elem.dataset.actionButton || elem.dataset.actionCommand || "text";
                             if (checkElementToListLocalStorage(command)) {
                                 elem.classList.add("selected")
                             } else {
-                                elem.classList.add("not-selected")
+                                // elem.classList.add("not-selected")
+                                addStyleElem();
                             }
                         })
                     } else {
+                        btnChoicelable.textContent = "Выбрать кнопки"
                         elementsChoice.forEach((elem) => {
                             elem.classList.remove("not-selected");
                             elem.classList.remove("selected");
@@ -1024,8 +1600,9 @@
                 let checkActivationStream = event.target.closest("#activationStream");
                 if (checkActivationStream) {
                     isStreamTemporaryActive = checkActivationStream.checked;
-
                     const isChecked = checkActivationStream.checked
+
+                    localStorage.setItem("activationStream", JSON.stringify(isChecked));
 
                     if (!isChecked) {
                         socket.send(JSON.stringify({ "stream": false }));
@@ -1033,6 +1610,9 @@
                         isStreamingActive = false;
 
                         activationInfinityStream.checked = false;
+
+                        isInfinityStreamActive = false;
+                        localStorage.setItem("infinityStream", JSON.stringify(false))
 
                         const ctx = canvas.getContext('2d');
                         ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -1043,18 +1623,20 @@
 
 
                 let checkInfinityStreamActive = event.target.closest("#activationInfinityStream");
-
                 if (checkInfinityStreamActive) {
+
                     isInfinityStreamActive = checkInfinityStreamActive.checked;
                     const isChecked = checkInfinityStreamActive.checked;
+
+                    localStorage.setItem("infinityStream", JSON.stringify(isChecked))
 
                     sendStreamState(isChecked);
                     return
                 }
 
                 let checkActivationSquare = event.target.closest("#activationSquare");
-
                 if (checkActivationSquare) {
+                    localStorage.setItem("square", JSON.stringify(checkActivationSquare.checked))
                     let bodyMouse = document.getElementsByClassName("body-mouse")[0];
 
                     bodyMouse.classList.toggle("body-mouse--square");
@@ -1063,8 +1645,8 @@
                 }
 
                 let rangeZoom = event.target.closest("#rangeZoom");
-
                 if (rangeZoom) {
+                    localStorage.setItem("zoom", rangeZoom.value)
                     socket.send(JSON.stringify({
                         "canvas_width": canvas.width,
                         "canvas_height": canvas.height,
@@ -1073,6 +1655,40 @@
                     return;
                 }
 
+                let rangeSensitivity = event.target.closest("#rangeSensitivity");
+                if (rangeSensitivity) {
+                    localStorage.setItem("sensitivity", rangeSensitivity.value)
+                    socket.send(JSON.stringify({
+                        input: "mouse",
+                        type: "settings",
+                        setting: "sensitivity",
+                        value: rangeSensitivity.value
+                    }));
+                    return;
+                }
+
+                let rangeScroll = event.target.closest("#rangeScroll");
+                if (rangeScroll) {
+                    localStorage.setItem("scroll", rangeScroll.value)
+                    socket.send(JSON.stringify({
+                        input: "mouse",
+                        type: "settings",
+                        setting: "scroll",
+                        value: rangeScroll.value
+                    }))
+                    return;
+                }
+                let pinHotkeys = event.target.closest("#fixedQuick");
+                if (pinHotkeys) {
+                    localStorage.setItem("fixedQuick", JSON.stringify(pinHotkeys.checked));
+                    let containerHotkeys = document.getElementById("container-hotkeys");
+                    if (pinHotkeys.checked) {
+
+                        containerHotkeys.classList.remove("notvisible-transform-hotkeys");
+                    } else {
+                        containerHotkeys.classList.add("notvisible-transform-hotkeys");
+                    }
+                }
             })
 
         </script>

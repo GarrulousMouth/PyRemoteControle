@@ -57,7 +57,11 @@ class KeyboardManager:
                 "volumeDown": Key.media_volume_down,
                 "nextMedia": Key.media_next,
                 "prevMedia": Key.media_previous,
-                "playPause": Key.media_play_pause
+                "playPause": Key.media_play_pause,
+                "arrowUp": Key.up,
+                "arrowDown": Key.down,
+                "arrowLeft": Key.left,
+                "arrowRight": Key.right,
             }
 
             key: Optional[str] = special_keys.get(value)

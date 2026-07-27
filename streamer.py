@@ -28,7 +28,7 @@ class ScreenStreamer:
     def update_client_dimensions(self, width: int, height: int, zoom: float) -> None:
         self.canvas_width = max(100, width)
         self.canvas_height = max(100, height)
-        self.zoom = max(0.2, min(5.0, zoom))
+        self.zoom = max(0.2, min(5.0, 5.5-zoom))
 
     def set_stream_state(self, enabled: bool) -> None:
         self.stream_enabled = enabled

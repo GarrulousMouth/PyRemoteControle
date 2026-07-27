@@ -11,8 +11,6 @@ from streamer import ScreenStreamer
 from config import Config
 
 app = FastAPI()
-mouse_controller = MouseManager()
-keyboard_controller = KeyboardManager()
 
 def _get_real_local_ip() -> str:
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -33,27 +31,45 @@ def index() -> FileResponse:
 async def websocket_endpoint(websocket: WebSocket) -> None:
     await websocket.accept()
 
+    mouse_controller = MouseManager()
+    keyboard_controller = KeyboardManager()
     streamer = ScreenStreamer()
-    # streamer.update_box_size(1000)
+
+    handlers = {
+    "mouse": lambda payload: mouse_controller.handle_commands(payload),
+    "keyboard": lambda payload: keyboard_controller.handle_commands(payload),
+    "stream_state": lambda payload: streamer.set_stream_state(bool(payload)),
+    "dimensions": lambda payload: streamer.update_client_dimensions(
+        width=int(payload.get("canvas_width", 0)),
+        height=int(payload.get("canvas_height", 0)),
+        zoom=float(payload.get("zoom", 1.0))
+    )
+}
+
     async def receive_loop():
         try:
             while True:
                 data: Dict[str, Any] = await websocket.receive_json()
-                print(data)
-                if "stream" in data:
-                    print(data["stream"])
-                    streamer.set_stream_state(bool(data["stream"]))
-                
-                elif "canvas_width" in data and "canvas_height" in data and "zoom" in data:
-                    streamer.update_client_dimensions(
-                        width=int(data['canvas_width']),
-                        height=int(data["canvas_height"]),
-                        zoom=float(data["zoom"])
-                    )
-                elif data["input"] == "mouse":
-                    mouse_controller.handle_commands(data)
-                elif data["input"] == "keyboard":
-                    keyboard_controller.handle_commands(data)
+
+                packet_type = data.get("input")
+
+                if packet_type == "settings":
+                    if "mouse" in data:
+                        for d in data["mouse"]:
+                            handlers["mouse"](d)
+                    if "stream" in data: handlers["stream_state"](data["stream"])
+                    if "settingStream" in data:
+                        # Собираем данные в один объект для хендлера
+                        geo_data = data["settingStream"]
+                        if "zoom" not in geo_data:
+                            geo_data["zoom"] = 2.0
+                        handlers["dimensions"](geo_data)
+                elif packet_type in handlers:
+                    handlers[packet_type](data)
+                elif "stream" in data:
+                    handlers["stream_state"](data["stream"])
+                elif "canvas_width" in data and "canvas_height" in data:
+                    handlers["dimensions"](data)
         except Exception:
             pass
 
